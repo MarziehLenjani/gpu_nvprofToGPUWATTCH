@@ -1,0 +1,1 @@
+./nvProfToGPUWATTCH.py ExampleStatAndConfig/RangMultipleC01/stats.txt ExampleStatAndConfig/RangMultipleC01/config.json templateFiles/template-xeon4Core2ChOverrhead.xml
