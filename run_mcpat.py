@@ -109,23 +109,23 @@ class parser:
 #runs McPAT and gives you the total energy in mJs
 def main():
     global opts
-    usage = "usage: %prog [options] <mcpat input file> <gem5 stats file>"
+    homeStr = os.environ['HOME']
+    usage = "--help"
     parser = OptionParser(usage=usage)
     parser.add_option("-q", "--quiet", 
         action="store_false", dest="verbose", default=True,
         help="don't print status messages to stdout")
-    parser.add_option("-o", "--out", type="string",
-        action="store", dest="out", default="mcpat-out.xml",
-        help="output file (input to McPAT)")
+
+    parser.add_option("-o", "--outs", type="string",
+                      action="store", dest="gpuwattch_xml_outputFiles", default=os.path.join(homeStr, "summaryResults/gpuwattch_xml_outputFiles"),
+                      help="output file ")
     (opts, args) = parser.parse_args()
-    if len(args) != 2:
-        parser.print_help()
-        sys.exit(1)
+
     #print getTimefromStats(args[1])
     #print runMcPAT(args[0])
     runtime,Penergy,Cenergy,L3energy,NoCenergy,MCenergy = getEnergy(args[0], args[1])
     #print "energy is %f mJ" % energy
-    print "%f %f %f %f %f %f" % (runtime,Penergy,Cenergy,L3energy, NoCenergy, MCenergy)
+    print ("%f %f %f %f %f %f" , runtime,Penergy,Cenergy,L3energy, NoCenergy, MCenergy)
     #readConfigFile(args[1])
     #readMcpatFile(args[2])
     #dumpMcpatOut(opts.out)

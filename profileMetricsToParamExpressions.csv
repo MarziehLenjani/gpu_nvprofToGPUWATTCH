@@ -1,7 +1,7 @@
 ,paramName,expressionCol
-0,total_cycles_match_mcpat,0
+0,total_cycles_match_mcpat,executionTime*clock_rate*1.0e6
 1,idle_cycles_match_mcpat,0
-2,busy_cycles_match_mcpat,0
+2,busy_cycles_match_mcpat,executionTime*clock_rate*1.0e6
 3,total_instructions_match_mcpat,inst_executed
 4,int_instruction_match_mcpat,inst_integer
 5,flt_instruction_match_mcpat,inst_fp_32+inst_fp_64
@@ -31,4 +31,4 @@
 27,memory_reads_match_mcpat,dram_read_transactions
 28,memory_writes_match_mcpat,dram_write_transactions
 30,block_size_in_byte, 32
-31,clock_rate,13450
+31,clock_rate,1345

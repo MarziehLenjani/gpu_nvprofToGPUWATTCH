@@ -3,7 +3,7 @@
 	<component id="system" name="system">
 		<!--McPAT will skip the components if number is set to 0 -->
 		<param name="GPU_Architecture" value="1"/><!-- 0-G80; 1-Fermi; others not supported -->
-		<param name="number_of_cores" value="16"/>
+		<param name="number_of_cores" value="112"/>
 		<param name="architecture" value="1"/> <!-- fermi:1 quadro:2 other: undefined-->
 		<param name="number_of_L1Directories" value="0"/>
 		<param name="number_of_L2Directories" value="0"/>
@@ -17,7 +17,7 @@
 		<param name="homogeneous_L3s" value="1"/>
 		<param name="homogeneous_ccs" value="1"/><!--cache coherece hardware -->
 		<param name="homogeneous_NoCs" value="1"/>
-		<param name="core_tech_node" value="40"/><!-- nm -->
+		<param name="core_tech_node" value="22"/><!-- nm -->
 		<param name="target_core_clockrate" value="700"/><!--MHz -->
 		<param name="temperature" value="380"/> <!-- Kelvin -->
 		<param name="number_cache_levels" value="2"/>
@@ -433,7 +433,7 @@
 
 		<component id="system.mem" name="mem">
 			<!-- Main memory property -->
-			<param name="mem_tech_node" value="40"/>
+			<param name="mem_tech_node" value="22"/>
 			<param name="device_clock" value="200"/><!--MHz, this is clock rate of the actual memory device, not the FSB -->
 			<param name="peak_transfer_rate" value="3200"/><!--MB/S-->
 			<param name="internal_prefetch_of_DRAM_chip" value="4"/>

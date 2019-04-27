@@ -13,6 +13,7 @@ from xml.etree import ElementTree as ET
 #from xml.etree import ElementTree as ET
 import pandas as pd
 import os
+
 #from xml.etree.ElementTree import XMLTreeBuilder
 
 # This is a wrapper over xml parser so that
@@ -32,16 +33,24 @@ def main():
     homeStr = os.environ['HOME']
     cf = currentframe()
 
+
     parser.add_option("-q", "--quiet",
                       action="store_false", dest="verbose", default=True,
                       help="don't print status messages to stdout")
+    parser.add_option("-p", "--pass", type="string",
+                      action="store", dest="password",
+                      default="ABCD",
+                      help="password ")
     parser.add_option("-g", "--genParam",
                       action="store_false", dest="GenerateEmptyParameters", default=False,
                       help="generate the name of parameters")
-    parser.add_option("-o", "--outs", type="string",
-                      action="store", dest="outputDirectory", default=os.path.join(homeStr, "summaryResults/gpuwattch_xml_outputFiles"),
-                      help="output file ")
-    parser.add_option("-c", "--csv", type="string",
+    parser.add_option("-x", "--xml_outs", type="string",
+                      action="store", dest="gpuwattch_xml_outputFiles", default=os.path.join(homeStr, "summaryResults/gpuwattch_xml_outputFiles"),
+                      help="xml output files ")
+    parser.add_option("-o", "--energy_outs", type="string",
+                      action="store", dest="energy_outputFiles", default=os.path.join(homeStr, "summaryResults/energy_outputFiles"),
+                      help="enery output file ")
+    parser.add_option("-c", "--csv_param", type="string",
                       action="store", dest="csvOut", default="temp_parammetrName.csv",
                       help="name of the file containing the name of the parameters ")
     parser.add_option("-t", "--template", type="string",
@@ -57,11 +66,11 @@ def main():
                       action="store", dest="expressionFileName", default="profileMetricsToParamExpressions.csv",
                       help="name of the file containing the  expressions that determines relation between metrics and params")
     (opts, args) = parser.parse_args()
-    outputDirectoryPath=os.path.join(homeStr,opts.outputDirectory)
+    gpuwattch_xml_outputFilesPath=os.path.join(homeStr,opts.gpuwattch_xml_outputFiles)
     statDirectoryPath=os.path.join(homeStr,opts.staDirectory)
     runResultFileName=os.path.join(homeStr,opts.runResultFileName)
     expressionFileName=opts.expressionFileName
-    os.makedirs(outputDirectoryPath, exist_ok=True)
+    os.makedirs(gpuwattch_xml_outputFilesPath, exist_ok=True)
 
     #global parameterNames
     global parameColumnName
@@ -86,12 +95,14 @@ def main():
         dumpCSVOut(templateMcpat,opts.csvOut)
     dataFramContaingExpressions = pd.read_csv(expressionFileName,dtype={'ID': object})
     print(dataFramContaingExpressions)
-    generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, runResultFileName, statDirectoryPath, outputDirectoryPath)
+    generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath)
+    #os.system('sshpass -p'+ opts.password+' scp -r ~/summaryResults/gpuwattch_xml_outputFiles  ml2au@power1.cs.virginia.edu:summaryResults/')
+
 
 
 
 #################################
-def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat, runResultFileName, statDirectoryPath, outputDirectoryPath):
+def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat, runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath):
 
     dataFrameContainingRunResult=pd.read_csv(runResultFileName)
     print(dataFrameContainingRunResult)
@@ -106,7 +117,7 @@ def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat, run
             if not oprerationDf.empty:
                 dataFrameContainingParams=mapStatsToParams(dataFramContaingExpressions,dataFrameContainingStats,oprerationDf,operationName)
                 print(dataFrameContainingParams)
-                dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, outputDirectoryPath)
+                dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, gpuwattch_xml_outputFilesPath)
             else:
                 print(operationName + "not found in csv file containg run time values \n" )
 
@@ -135,7 +146,7 @@ def dumpCSVOut(templateMcpat,outFile):
     if opts.verbose: print("Writing to the empty CSV file: %s" % outFile)
     print(parameterNames)
     parameterNames.to_csv(outFile)
-def dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, outputDirectoryPath):
+def dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, gpuwattch_xml_outputFilesPath):
     rootElem = templateMcpat.getroot()
     #configMatch = re.compile(r'config\.([a-zA-Z0-9_:\.]+)')
     # replace params with values from the GEM5 config file
@@ -161,7 +172,7 @@ def dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, output
                 print ( value +" not found\n" )
                 param.attrib['value']=str(0)
 
-    xmlOutputFileName=os.path.join(outputDirectoryPath,operationName+".xml")
+    xmlOutputFileName=os.path.join(gpuwattch_xml_outputFilesPath,operationName+".xml")
     if opts.verbose: print("Writing input to McPAT in: %s" % xmlOutputFileName)
     templateMcpat.write(xmlOutputFileName)
 
@@ -198,9 +209,11 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
         tempMetricName = dataFramContaingExpressions.iloc[j].loc[parameColumnName]
         expression = dataFramContaingExpressions.iloc[j].loc[expressionColName]
         tempValue = 0
+        """
         if(tempMetricName=='total_cycles_match_mcpat' or tempMetricName=='idle_cycles_match_mcpat' or tempMetricName=='busy_cycles_match_mcpat' ):
             print("*************************\n")
-            exectime = oprerationDf.iloc[0].loc[executionTimeColumnName]
+            #exectime = oprerationDf.iloc[0].loc[executionTimeColumnName] #ldToDelete
+            exectime=
             #any parameter that you can pass as a fixed parameter can be put in the expression file
             clock_rateDf=dataFramContaingExpressions.loc[dataFramContaingExpressions[parameColumnName]=='clock_rate']
             if not clock_rateDf.empty:
@@ -215,14 +228,22 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
             else:
                 sys.exit("clock rate is not found \n")
         else:
+        """
+        allStats = regulareExpression.findall(expression)
+        expr = expression
+        tempValue=0
+        print(expr+"  len is:"+str(len(allStats)))
 
-            allStats = regulareExpression.findall(expression)
-            expr = expression
-            tempValue=0
-            print(expr+"  len is:"+str(len(allStats)))
+        for i in range(len(allStats)):
+            if(allStats[i]=='clock_rate'):
 
-            for i in range(len(allStats)):
-
+                clock_rateDf = dataFramContaingExpressions.loc[
+                    dataFramContaingExpressions[parameColumnName] == 'clock_rate']
+                if not clock_rateDf.empty:
+                    clock_rate = clock_rateDf.iloc[0].loc[expressionColName]
+                    valueOfStat=eval(clock_rate)
+                    expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
+            else:
                 tempDf=dataFrameContaingStats.loc[dataFrameContaingStats[metricNameStr]==allStats[i]]
                 print(tempDf)
                 if not tempDf.empty:
@@ -233,11 +254,13 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
 
                     listOfNotFound.append(allStats[i])
 
-            tempValue=str(eval(expr))
+        tempValue=str(eval(expr))
         dataFrameContaingParams=dataFrameContaingParams.append({parameColumnName: tempMetricName, valueColumName: tempValue}, ignore_index=True)
     print(dataFrameContaingStats)
     print("***WARNING: the following does not exist in stats***")
     print(*listOfNotFound)
     return dataFrameContaingParams
+#def getEnergy(gpuWattchDirectory, gpuwattch_xml_outputFiles):
+
 if __name__ == '__main__':
     main()
