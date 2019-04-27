@@ -59,16 +59,16 @@ def main():
     parser.add_option("-s", "--stats", type="string",
                       action="store", dest="staDirectory", default=os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="input file ")
-    parser.add_option("-r", "--run", type="string",
-                      action="store", dest="runResultFileName", default="summaryResults/runResult.csv",
-                      help="name of the file containing the  run result")
+    # parser.add_option("-r", "--run", type="string",
+    #                   action="store", dest="runResultFileName", default="summaryResults/runResult.csv",
+    #                   help="name of the file containing the  run result")
     parser.add_option("-e", "--expr", type="string",
                       action="store", dest="expressionFileName", default="profileMetricsToParamExpressions.csv",
                       help="name of the file containing the  expressions that determines relation between metrics and params")
     (opts, args) = parser.parse_args()
     gpuwattch_xml_outputFilesPath=os.path.join(homeStr,opts.gpuwattch_xml_outputFiles)
     statDirectoryPath=os.path.join(homeStr,opts.staDirectory)
-    runResultFileName=os.path.join(homeStr,opts.runResultFileName)
+    #runResultFileName=os.path.join(homeStr,opts.runResultFileName)
     expressionFileName=opts.expressionFileName
     os.makedirs(gpuwattch_xml_outputFilesPath, exist_ok=True)
 
@@ -88,7 +88,7 @@ def main():
     executionTimeColumnName='TimeVar'
     operationColumnName = 'operation'
     expressionColName='expressionCol'
-    frequencyOfGPU=1328
+
 
     templateMcpat=readMcpatFile(opts.templateFileName)
     if(opts.GenerateEmptyParameters ):
