@@ -59,20 +59,21 @@ def main():
     parser.add_option("-s", "--stats", type="string",
                       action="store", dest="staDirectory", default=os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="input file ")
-    # parser.add_option("-r", "--run", type="string",
-    #                   action="store", dest="runResultFileName", default="summaryResults/runResult.csv",
-    #                   help="name of the file containing the  run result")
+    parser.add_option("-r", "--run", type="string",
+                      action="store", dest="runResultFileName", default="summaryResults/runResult.csv",
+                      help="name of the file containing the  run result")
     parser.add_option("-e", "--expr", type="string",
                       action="store", dest="expressionFileName", default="profileMetricsToParamExpressions.csv",
                       help="name of the file containing the  expressions that determines relation between metrics and params")
     (opts, args) = parser.parse_args()
     gpuwattch_xml_outputFilesPath=os.path.join(homeStr,opts.gpuwattch_xml_outputFiles)
     statDirectoryPath=os.path.join(homeStr,opts.staDirectory)
-    #runResultFileName=os.path.join(homeStr,opts.runResultFileName)
+    runResultFileName=os.path.join(homeStr,opts.runResultFileName)
     expressionFileName=opts.expressionFileName
     os.makedirs(gpuwattch_xml_outputFilesPath, exist_ok=True)
 
     #global parameterNames
+    getRunTimeFromAnotherFile=False
     global parameColumnName
     global valueColumName
     global metricNameStr
@@ -88,38 +89,45 @@ def main():
     executionTimeColumnName='TimeVar'
     operationColumnName = 'operation'
     expressionColName='expressionCol'
-
+    frequencyOfGPU=1328
 
     templateMcpat=readMcpatFile(opts.templateFileName)
     if(opts.GenerateEmptyParameters ):
         dumpCSVOut(templateMcpat,opts.csvOut)
     dataFramContaingExpressions = pd.read_csv(expressionFileName,dtype={'ID': object})
     print(dataFramContaingExpressions)
-    generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath)
+    generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, getRunTimeFromAnotherFile,runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath)
     #os.system('sshpass -p'+ opts.password+' scp -r ~/summaryResults/gpuwattch_xml_outputFiles  ml2au@power1.cs.virginia.edu:summaryResults/')
 
 
 
 
 #################################
-def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat, runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath):
+def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat,getRunTimeFromAnotherFile, runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath):
 
-    dataFrameContainingRunResult=pd.read_csv(runResultFileName)
-    print(dataFrameContainingRunResult)
+    if(getRunTimeFromAnotherFile):
+        dataFrameContainingRunResult=pd.read_csv(runResultFileName)
+        print(dataFrameContainingRunResult)
     for operationFileName in  os.listdir(statDirectoryPath):
         if operationFileName[0]!='.':
             operationName=operationFileName[:-4]
             print(operationName)
             pathTooperationStatFileNames=os.path.join(statDirectoryPath,operationFileName)
             dataFrameContainingStats=pd.read_csv(pathTooperationStatFileNames)
-            oprerationDf = dataFrameContainingRunResult.loc[
-                dataFrameContainingRunResult[operationColumnName] == operationName]
-            if not oprerationDf.empty:
-                dataFrameContainingParams=mapStatsToParams(dataFramContaingExpressions,dataFrameContainingStats,oprerationDf,operationName)
-                print(dataFrameContainingParams)
-                dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, gpuwattch_xml_outputFilesPath)
+
+            if (getRunTimeFromAnotherFile):
+                oprerationDf = dataFrameContainingRunResult.loc[
+                    dataFrameContainingRunResult[operationColumnName] == operationName]
+                if oprerationDf.empty:
+                    print(operationName + "not found in csv file containg run time values \n")
             else:
-                print(operationName + "not found in csv file containg run time values \n" )
+                oprerationDf=0
+
+            dataFrameContainingParams=mapStatsToParams(dataFramContaingExpressions,dataFrameContainingStats,oprerationDf,operationName)
+            print(dataFrameContainingParams)
+            dumpMcpatOut(templateMcpat, dataFrameContainingParams, operationName, gpuwattch_xml_outputFilesPath)
+
+
 
 ###################################
 
