@@ -436,20 +436,27 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     L2energyStr = 'L2energy'
     NoCenergyStr = 'NoCenergy'
     MCenergyStr = 'MCenergy'
-    DRAM_EnergyStr= 'DRAM_EnergyStr'
+    DRAM_EnergyStr= 'DRAM_Energy'
+    LSEnergyStr='LSEnergy'
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
+
+
 
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
-    Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic=runGPUWATTCH(xmlFile)
+    Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
     Penergy = (Pleakage + Pdynamic)*runtime
     Cenergy = (Cleakage + Cdynamic)*runtime
     L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
+    LSEnergy= (LSleakage, LSdynamic)*runtime
     DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,dataFrameContainingStats,"totalDRAM_Energy")
-    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy, DRAM_EnergyStr: DRAM_Energy}
+    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
+              NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
+              DRAM_EnergyStr: DRAM_Energy,
+              LSEnergyStr:LSEnergy}
     tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
     return tmpEnergyDf
@@ -496,8 +503,8 @@ def runGPUWATTCH(procConfigFile):
     LSleakage = re.sub(' W', '', Pleakage)
     LSdynamic = re.sub(' W', '', Pdynamic)
     return (float(Pleakage), float(Pdynamic), float(Cleakage), float(Cdynamic), float(L3leakage), float(L3dynamic),
-            float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic))
-            #float(LSleakage), float(LSdynamic), float(LSleakage),float(LSdynamic))
+            float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic),
+            float(LSleakage), float(LSdynamic))
 
 
 if __name__ == '__main__':
