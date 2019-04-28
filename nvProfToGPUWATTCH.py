@@ -452,8 +452,8 @@ def runGPUWATTCH(procConfigFile):
     Cleakage = re.sub(' W', '', Cleakage)
     Cdynamic = re.sub(' W', '', Cdynamic)
     # -------------------------------------------
-    L3leakage = p.getValue(['Processor:', "Total L3s:", 'Subthreshold Leakage'])
-    L3dynamic = p.getValue(['Processor:', "Total L3s:", 'Runtime Dynamic'])
+    L3leakage = p.getValue(['Processor:', "Total L2s:", 'Subthreshold Leakage'])
+    L3dynamic = p.getValue(['Processor:', "Total L2s:", 'Runtime Dynamic'])
     L3leakage = re.sub(' W', '', L3leakage)
     L3dynamic = re.sub(' W', '', L3dynamic)
     # ----------------------------------------
