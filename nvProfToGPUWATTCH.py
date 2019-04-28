@@ -432,7 +432,7 @@ def runGPUWATTCH(procConfigFile):
     command = opts.gpuwatBinFile
     command += " -print_level 0"
     command += " -infile %s" % procConfigFile
-    command += ">> tmp.txt"
+    #command += ">> tmp.txt"
     print (command)
     output = subp.check_output(command, shell=True).decode("utf-8")
 
