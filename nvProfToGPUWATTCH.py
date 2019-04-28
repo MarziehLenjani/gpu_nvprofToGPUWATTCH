@@ -451,7 +451,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
-    LSEnergy= (LSleakage, LSdynamic)*runtime
+    LSEnergy= (LSleakage+ LSdynamic)*runtime
     DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,dataFrameContainingStats,"totalDRAM_Energy")
     temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
