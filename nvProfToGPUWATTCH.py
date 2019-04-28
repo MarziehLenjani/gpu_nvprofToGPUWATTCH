@@ -106,7 +106,7 @@ def main():
     print(dataFramContaingExpressions)
     generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, getRunTimeFromRunResultFile,runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath)
     #os.system('sshpass -p'+ opts.password+' scp -r ~/summaryResults/gpuwattch_xml_outputFiles  ml2au@power1.cs.virginia.edu:summaryResults/')
-    getEnergy(energy_outputFilesPath,gpuwattch_xml_outputFilesPath,statDirectoryPath)
+    getEnergy(energy_outputFilesPath,gpuwattch_xml_outputFilesPath,statDirectoryPath,dataFramContaingExpressions)
 
 
 
@@ -275,6 +275,26 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
     print("***WARNING: the following does not exist in stats***")
     print(*listOfNotFound)
     return dataFrameContaingParams
+def getValueFromExpression(dataFramContaingExpressions,paramName):
+    tempDf1 = dataFramContaingExpressions.loc[dataFramContaingExpressions[metricNameStr] == paramName]
+    regulareExpression = re.compile(r'([a-zA-Z0-9_:]+)')
+    #print(tempDf)
+    if not tempDf1.empty:
+        expression = tempDf1.iloc[0].loc[metricValueStr]
+        allStats = regulareExpression.findall(expression)
+        expr = expression
+        for i in range(len(allStats)):
+
+            tempDf2 = dataFramContaingExpressions.loc[
+                dataFramContaingExpressions[parameColumnName] == allStats[i]]
+            if not tempDf2.empty:
+                tmpStat = tempDf2.iloc[0].loc[expressionColName]
+                valueOfStat=eval(tmpStat)
+                expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
+        tempValue = str(eval(expr))
+    else:
+        print(paramName + " not found \n")
+    return tempValue
 def getStat(dataFrameContaingStats,statName):
     tempDf = dataFrameContaingStats.loc[dataFrameContaingStats[metricNameStr] == statName]
 
@@ -394,7 +414,7 @@ class parser:
 
 
 # runs McPAT and gives you the total energy in mJs
-def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath):
+def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath,dataFramContaingExpressions):
     EnergyDf = pd.DataFrame()
     for operationFileName in os.listdir(statDirectoryPath):
         if operationFileName[0] != '.':
@@ -402,17 +422,19 @@ def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath):
             print(operationName)
             pathTooperationStatFileNames = os.path.join(statDirectoryPath, operationFileName)
             dataFrameContainingStats = pd.read_csv(pathTooperationStatFileNames)
+            dataFrameContaingParams=pd.read_csv()
             xmlFile=os.path.join(gpuwattch_xml_outputFiles, operationName+".xml")
-            EnergyDf = runAndGetEnergy(xmlFile, dataFrameContainingStats,operationName)
+            EnergyDf = runAndGetEnergy(xmlFile, dataFrameContainingStats,dataFramContaingExpressions,operationName)
     print (EnergyDf)
-def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
+def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions,operationName):
     operationNameStr='operation'
-    runtimeStr = 'runtimeStr'
-    PenergyStr = 'PenergyStr'
-    CenergyStr = 'CenergyStr'
-    L2energyStr = 'L2energyStr'
-    NoCenergyStr = 'NoCenergyStr'
-    MCenergyStr = 'MCenergyStr'
+    runtimeStr = 'runtime'
+    PenergyStr = 'Penergy'
+    CenergyStr = 'Cenergy'
+    L2energyStr = 'L2energy'
+    NoCenergyStr = 'NoCenergy'
+    MCenergyStr = 'MCenergy'
+    DRAM_EnergyStr= 'DRAM_EnergyStr'
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     #leakage, dynamic = runMcPAT(procConfigFile)
@@ -424,7 +446,8 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
     L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
-    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy}
+    DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,"totalDRAM_Energy")
+    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy, DRAM_EnergyStr: DRAM_Energy}
     tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
     return tmpEnergyDf
@@ -465,8 +488,14 @@ def runGPUWATTCH(procConfigFile):
     MCdynamic = p.getValue(['Processor:', "Total MCs", 'Runtime Dynamic'])
     MCleakage = re.sub(' W', '', MCleakage)
     MCdynamic = re.sub(' W', '', MCdynamic)
+    # ---------------------------------------
+    LSleakage = p.getValue(['Core:', 'Load Store Unit:', 'Subthreshold Leakage'])
+    LSdynamic = p.getValue(['Core:', 'Load Store Unit:', 'Runtime Dynamic'])
+    LSleakage = re.sub(' W', '', Pleakage)
+    LSdynamic = re.sub(' W', '', Pdynamic)
     return (float(Pleakage), float(Pdynamic), float(Cleakage), float(Cdynamic), float(L3leakage), float(L3dynamic),
             float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic))
+            #float(LSleakage), float(LSdynamic), float(LSleakage),float(LSdynamic))
 
 
 if __name__ == '__main__':
