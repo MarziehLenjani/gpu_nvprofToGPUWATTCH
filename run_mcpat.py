@@ -123,9 +123,9 @@ def main():
 
     #print getTimefromStats(args[1])
     #print runMcPAT(args[0])
-    runtime,Penergy,Cenergy,L3energy,NoCenergy,MCenergy = getEnergy(args[0], args[1])
+    runtime,Penergy,Cenergy,L2energy,NoCenergy,MCenergy = getEnergy(args[0], args[1])
     #print "energy is %f mJ" % energy
-    print ("%f %f %f %f %f %f" , runtime,Penergy,Cenergy,L3energy, NoCenergy, MCenergy)
+    print ("%f %f %f %f %f %f" , runtime,Penergy,Cenergy,L2energy, NoCenergy, MCenergy)
     #readConfigFile(args[1])
     #readMcpatFile(args[2])
     #dumpMcpatOut(opts.out)
@@ -136,11 +136,11 @@ def getEnergy(procConfigFile, statsFile):
     runtime = getTimefromStats(statsFile)
     Penergy = (Pleakage + Pdynamic)*runtime
     Cenergy = (Cleakage + Cdynamic)*runtime
-    L3energy = (L3leakage + L3dynamic)*runtime
+    L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
-    return runtime,Penergy,Cenergy,L3energy,NoCenergy,MCenergy
+    return runtime,Penergy,Cenergy,L2energy,NoCenergy,MCenergy
 
 def runMcPAT(procConfigFile):
     command = mcpat_home

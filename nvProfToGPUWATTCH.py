@@ -251,14 +251,13 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
         print(expr+"  len is:"+str(len(allStats)))
 
         for i in range(len(allStats)):
-            if(allStats[i]=='clock_rate'):
 
-                clock_rateDf = dataFramContaingExpressions.loc[
-                    dataFramContaingExpressions[parameColumnName] == 'clock_rate']
-                if not clock_rateDf.empty:
-                    clock_rate = clock_rateDf.iloc[0].loc[expressionColName]
-                    valueOfStat=eval(clock_rate)
-                    expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
+            tempDf = dataFramContaingExpressions.loc[
+                dataFramContaingExpressions[parameColumnName] == allStats[i]]
+            if not tempDf.empty:
+                tmpStat = tempDf.iloc[0].loc[expressionColName]
+                valueOfStat=eval(tmpStat)
+                expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
             else:
                 tempDf=dataFrameContaingStats.loc[dataFrameContaingStats[metricNameStr]==allStats[i]]
                 print(tempDf)
@@ -411,10 +410,10 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
     runtimeStr = 'runtimeStr'
     PenergyStr = 'PenergyStr'
     CenergyStr = 'CenergyStr'
-    L3energyStr = 'L3energyStr'
+    L2energyStr = 'L2energyStr'
     NoCenergyStr = 'NoCenergyStr'
     MCenergyStr = 'MCenergyStr'
-    tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L3energyStr,NoCenergyStr,MCenergyStr])
+    tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
@@ -422,10 +421,10 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
     runtime = getStat(dataFrameContainingStats,"executionTime")
     Penergy = (Pleakage + Pdynamic)*runtime
     Cenergy = (Cleakage + Cdynamic)*runtime
-    L3energy = (L3leakage + L3dynamic)*runtime
+    L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
-    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L3energyStr:L3energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy}
+    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy}
     tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
     return tmpEnergyDf

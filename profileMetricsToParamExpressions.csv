@@ -32,3 +32,4 @@
 28,memory_writes_match_mcpat,dram_write_transactions
 30,block_size_in_byte, 32
 31,clock_rate,1345
+32,NOC_accesses_match_mcpat,(dram_read_transactions+dram_write_transactions)/32

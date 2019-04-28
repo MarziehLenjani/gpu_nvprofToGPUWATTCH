@@ -49,7 +49,7 @@ for AppDirectory in ${gem5ResultBase}*/ ; do
 	AppName=${AppName%"/"}
         echo "$AppName"
         outputFileName="${OutPutPath}/${AppName}.csv"
-        echo "configNumber runtime Penergy Cenergy L3energy NoCenergy MCenergy" >> $outputFileName
+        echo "configNumber runtime Penergy Cenergy L2energy NoCenergy MCenergy" >> $outputFileName
 	for ConfigDirectory in ${AppDirectory}*/; do 
 		
 		ConfigNUmber=${ConfigDirectory#"${AppDirectory}${configurationPrefix}"}
