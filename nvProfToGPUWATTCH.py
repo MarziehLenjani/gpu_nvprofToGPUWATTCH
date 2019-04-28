@@ -275,7 +275,7 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
     print("***WARNING: the following does not exist in stats***")
     print(*listOfNotFound)
     return dataFrameContaingParams
-def getValueFromExpression(dataFramContaingExpressions,paramName):
+def getValueFromExpression(dataFramContaingExpressions,dataFrameContaingStats,paramName):
     tempDf1 = dataFramContaingExpressions.loc[dataFramContaingExpressions[parameColumnName] == paramName]
     regulareExpression = re.compile(r'([a-zA-Z0-9_:]+)')
     #print(tempDf)
@@ -290,8 +290,11 @@ def getValueFromExpression(dataFramContaingExpressions,paramName):
             if not tempDf2.empty:
                 tmpStat = tempDf2.iloc[0].loc[expressionColName]
                 valueOfStat=eval(tmpStat)
-                expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
-        tempValue = str(eval(expr))
+
+            else:
+                valueOfStat=getStat(dataFrameContaingStats, allStats[i])
+            expr = re.sub('%s' % allStats[i], str(valueOfStat), expr)
+        tempValue = eval(expr)
     else:
         print(paramName + " not found \n")
     return tempValue
@@ -445,7 +448,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     L2energy = (L3leakage + L3dynamic)*runtime
     NoCenergy = (NoCleakage + NoCdynamic)*runtime
     MCenergy = (MCleakage + MCdynamic)*runtime
-    DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,"totalDRAM_Energy")
+    DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,dataFrameContainingStats,"totalDRAM_Energy")
     temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy, NoCenergyStr:NoCenergy, MCenergyStr:MCenergy, DRAM_EnergyStr: DRAM_Energy}
     tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
