@@ -335,7 +335,7 @@ class parser:
     def __init__(this, data_in):
         this.debug = False
         this.name = 'gpuWattch:gpuWattch_parse'
-        print(data_in)
+        #print(data_in)
 
         buf = io.StringIO(data_in)
         #buf = numpy.genfromtxt(io.BytesIO(data_in.encode()))
@@ -348,12 +348,14 @@ class parser:
         for line in buf:
 
             # this.dprint('l: ' + str(line.strip()))
+            print(line)
 
             indent = len(line) - len(line.lstrip())
             equal = '=' in line
             colon = ':' in line
             useless = not equal and not colon
             items = list(map(lambda x: x.strip(), line.split('=')))
+
 
             branch = trunk[-1]
 
