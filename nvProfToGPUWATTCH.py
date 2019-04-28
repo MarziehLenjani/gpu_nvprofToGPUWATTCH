@@ -334,6 +334,7 @@ class parser:
     def __init__(this, data_in):
         this.debug = False
         this.name = 'gpuWattch:gpuWattch_parse'
+        print(data_in)
 
         buf = io.StringIO(data_in)
 
@@ -429,7 +430,7 @@ def runGPUWATTCH(procConfigFile):
     command += " -infile %s" % procConfigFile
     print (command)
     output = subp.check_output(command, shell=True)
-    print(output)
+    #print(output)
     p = parser(output)
     #print (p.get_tree())
     Pleakage = p.getValue(['Processor:', 'Total Leakage'])
