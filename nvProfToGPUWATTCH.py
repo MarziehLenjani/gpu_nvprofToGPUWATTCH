@@ -500,8 +500,8 @@ def runGPUWATTCH(procConfigFile):
     # ---------------------------------------
     LSleakage = p.getValue(['Core:', 'Load Store Unit:', 'Subthreshold Leakage'])
     LSdynamic = p.getValue(['Core:', 'Load Store Unit:', 'Runtime Dynamic'])
-    LSleakage = re.sub(' W', '', Pleakage)
-    LSdynamic = re.sub(' W', '', Pdynamic)
+    LSleakage = re.sub(' W', '', LSleakage)
+    LSdynamic = re.sub(' W', '', LSdynamic)
     return (float(Pleakage), float(Pdynamic), float(Cleakage), float(Cdynamic), float(L3leakage), float(L3dynamic),
             float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic),
             float(LSleakage), float(LSdynamic))
