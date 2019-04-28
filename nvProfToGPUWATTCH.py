@@ -276,7 +276,7 @@ def mapStatsToParams(dataFramContaingExpressions,dataFrameContaingStats,oprerati
     print(*listOfNotFound)
     return dataFrameContaingParams
 def getValueFromExpression(dataFramContaingExpressions,paramName):
-    tempDf1 = dataFramContaingExpressions.loc[dataFramContaingExpressions[metricNameStr] == paramName]
+    tempDf1 = dataFramContaingExpressions.loc[dataFramContaingExpressions[parameColumnName] == paramName]
     regulareExpression = re.compile(r'([a-zA-Z0-9_:]+)')
     #print(tempDf)
     if not tempDf1.empty:
