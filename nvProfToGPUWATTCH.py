@@ -429,8 +429,9 @@ def runGPUWATTCH(procConfigFile):
     command += " -infile %s" % procConfigFile
     print (command)
     output = subp.check_output(command, shell=True)
+    print(output)
     p = parser(output)
-    # print p.get_tree()
+    #print (p.get_tree())
     Pleakage = p.getValue(['Processor:', 'Total Leakage'])
     Pdynamic = p.getValue(['Processor:', 'Runtime Dynamic'])
     Pleakage = re.sub(' W', '', Pleakage)
