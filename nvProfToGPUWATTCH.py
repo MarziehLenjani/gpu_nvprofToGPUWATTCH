@@ -437,8 +437,9 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     NoCenergyStr = 'NoCenergy'
     MCenergyStr = 'MCenergy'
     DRAM_EnergyStr= 'DRAM_EnergyStr'
-    tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
+    #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
+    tmpEnergyDf = pd.DataFrame()
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
     Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic=runGPUWATTCH(xmlFile)
