@@ -5,7 +5,7 @@ import os
 import json
 import types
 import math
-import StringIO
+
 import subprocess as subp
 from optparse import OptionParser
 mcpat_home = os.getenv( "MCPAT_HOME", "/if22/ml2au/McPAT_v1.0/mcpat")
@@ -48,7 +48,7 @@ class parser:
 
     def dprint(this,astr):
         if this.debug:
-            print this.name,
+            print (this.name,
             print astr
 
     def __init__(this, data_in):
