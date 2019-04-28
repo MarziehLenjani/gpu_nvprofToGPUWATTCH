@@ -336,7 +336,9 @@ class parser:
         this.name = 'gpuWattch:gpuWattch_parse'
         print(data_in)
 
-        buf = io.StringIO(data_in)
+        #buf = io.StringIO(data_in)
+        buf = io.BytesIO(data_in)
+
 
         this.root = parse_node('root', None, -1)
         trunk = [this.root]
