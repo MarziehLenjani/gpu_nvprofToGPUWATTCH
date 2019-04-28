@@ -338,7 +338,7 @@ class parser:
         print(data_in)
 
         #buf = io.StringIO(data_in)
-        buf = numpy.genfromtxt(io.BytesIO(data_in))
+        buf = numpy.genfromtxt(io.BytesIO(data_in.encode()))
 
 
 
