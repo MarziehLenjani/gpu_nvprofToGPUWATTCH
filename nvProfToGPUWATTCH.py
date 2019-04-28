@@ -409,8 +409,8 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L3energyStr,NoCenergyStr,MCenergyStr])
 
     #leakage, dynamic = runMcPAT(procConfigFile)
-    Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
-    #Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic=runGPUWATTCH(xmlFile)
+    #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
+    Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic=runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
     Penergy = (Pleakage + Pdynamic)*runtime
     Cenergy = (Cleakage + Cdynamic)*runtime
