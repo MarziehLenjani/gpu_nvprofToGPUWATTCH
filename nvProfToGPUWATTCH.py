@@ -393,7 +393,7 @@ def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath):
         if operationFileName[0] != '.':
             operationName = operationFileName[:-4]
             print(operationName)
-            pathTooperationStatFileNames = os.path.join(statDirectoryPath, operationFileName)
+            pathTooperationStatFileNames = os.path.join(statDirectoryPath, operationName+".xml")
             dataFrameContainingStats = pd.read_csv(pathTooperationStatFileNames)
             xmlFile=os.path.join(gpuwattch_xml_outputFiles, operationFileName)
             EnergyDf = runAndGetEnergy(xmlFile, dataFrameContainingStats,operationName)
