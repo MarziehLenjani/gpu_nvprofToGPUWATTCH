@@ -433,7 +433,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,operationName):
 
 def runGPUWATTCH(procConfigFile):
     command = opts.gpuwatBinFile
-    command += " -print_level 0"
+    command += " -print_level 5"
     command += " -infile %s" % procConfigFile
     #command += ">> tmp.txt"
     print (command)
