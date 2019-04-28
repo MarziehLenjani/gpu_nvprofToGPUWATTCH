@@ -304,7 +304,7 @@ class parse_node:
     def get_tree(this, indent):
         padding = ' ' * indent * 2
         me = padding + this.__str__()
-        kids = map(lambda x: x.get_tree(indent + 1), this.leaves)
+        kids = list(map(lambda x: x.get_tree(indent + 1), this.leaves))
         return me + '\n' + ''.join(kids)
 
     def getValue(this, key_list):
@@ -316,7 +316,7 @@ class parse_node:
             if len(key_list) == 1:
                 return this.value
             else:
-                kids = map(lambda x: x.getValue(key_list[1:]), this.leaves)
+                kids = list(map(lambda x: x.getValue(key_list[1:]), this.leaves))
                 # print 'kids: ' + str(kids)
                 return ''.join(kids)
         return ''
@@ -353,7 +353,7 @@ class parser:
             equal = '=' in line
             colon = ':' in line
             useless = not equal and not colon
-            items = map(lambda x: x.strip(), line.split('='))
+            items = list(map(lambda x: x.strip(), line.split('=')))
 
             branch = trunk[-1]
 
