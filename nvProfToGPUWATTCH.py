@@ -337,8 +337,8 @@ class parser:
         this.name = 'gpuWattch:gpuWattch_parse'
         print(data_in)
 
-        #buf = io.StringIO(data_in)
-        buf = numpy.genfromtxt(io.BytesIO(data_in.encode()))
+        buf = io.StringIO(data_in)
+        #buf = numpy.genfromtxt(io.BytesIO(data_in.encode()))
 
 
 
