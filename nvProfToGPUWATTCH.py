@@ -280,7 +280,7 @@ def getValueFromExpression(dataFramContaingExpressions,paramName):
     regulareExpression = re.compile(r'([a-zA-Z0-9_:]+)')
     #print(tempDf)
     if not tempDf1.empty:
-        expression = tempDf1.iloc[0].loc[parameColumnName]
+        expression = tempDf1.iloc[0].loc[expressionColName]
         allStats = regulareExpression.findall(expression)
         expr = expression
         for i in range(len(allStats)):
