@@ -12,6 +12,7 @@ import math
 from xml.etree import ElementTree as ET
 #from xml.etree import ElementTree as ET
 import pandas as pd
+import numpy
 import os
 
 import io
@@ -337,7 +338,8 @@ class parser:
         print(data_in)
 
         #buf = io.StringIO(data_in)
-        buf = io.BytesIO(data_in)
+        buf = numpy.genfromtxt(io.BytesIO(data_in))
+
 
 
         this.root = parse_node('root', None, -1)
