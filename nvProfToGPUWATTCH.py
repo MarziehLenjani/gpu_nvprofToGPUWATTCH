@@ -335,7 +335,7 @@ class parser:
     def __init__(this, data_in):
         this.debug = False
         this.name = 'gpuWattch:gpuWattch_parse'
-        #print(data_in)
+        print(data_in)
 
         buf = io.StringIO(data_in)
         #buf = numpy.genfromtxt(io.BytesIO(data_in.encode()))
