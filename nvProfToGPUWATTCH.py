@@ -389,6 +389,7 @@ class parser:
 
     def getValue(this, key_list):
         value = this.root.getValue(['root'] + key_list)
+        print(key_list)
         assert (value != '')
         return value
 
