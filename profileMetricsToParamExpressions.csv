@@ -1,7 +1,7 @@
 ,paramName,expressionCol
 0,total_cycles_match_mcpat,executionTime*1.e-3 *clock_rate*1.0e6
 1,idle_cycles_match_mcpat,0
-2,busy_cycles_match_mcpat,executionTime*1.e-3* clock_rate*1.0e6
+2,busy_cycles_match_mcpat,0
 3,total_instructions_match_mcpat,inst_executed/32
 4,int_instruction_match_mcpat,inst_integer/32
 5,flt_instruction_match_mcpat,(inst_fp_32+inst_fp_64)/32
