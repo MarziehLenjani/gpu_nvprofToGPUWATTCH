@@ -446,7 +446,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
     Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
-    runtime = getStat(dataFrameContainingStats,"executionTime")
+    runtime = getStat(dataFrameContainingStats,"executionTime")*1000
     Penergy = (Pleakage + Pdynamic)*runtime
     Cenergy = (Cleakage + Cdynamic)*runtime
     L2energy = (L3leakage + L3dynamic)*runtime
