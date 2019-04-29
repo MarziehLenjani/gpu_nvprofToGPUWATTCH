@@ -39,4 +39,4 @@
 36,dramExternalPortEnergy_perByte,(3.0e-12)*8
 37,totalDRAM_Energy,(dram_activation_energy_perByte+dram_accessEnergyPerByte+dramExternalPortEnergy_perByte)*(dram_write_bytes+dram_read_bytes)
 38,numberOfCores,112
-39,numberOfMemoryController,6
+39,numberOfMemoryController,112
