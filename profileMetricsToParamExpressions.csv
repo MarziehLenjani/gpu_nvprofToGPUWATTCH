@@ -2,10 +2,10 @@
 0,total_cycles_match_mcpat,executionTime*1.e-3 *clock_rate*1.0e6
 1,idle_cycles_match_mcpat,0
 2,busy_cycles_match_mcpat,0
-3,total_instructions_match_mcpat,(inst_executed/32)/numberOfCores
-4,int_instruction_match_mcpat,(inst_integer/32)/numberOfCores
-5,flt_instruction_match_mcpat,((inst_fp_32+inst_fp_64)/32)/numberOfCores
-6,branch_instruction_match_mcpat,(inst_control/32)/numberOfCores
+3,total_instructions_match_mcpat,(inst_executed)/numberOfCores
+4,int_instruction_match_mcpat,(inst_integer)/numberOfCores
+5,flt_instruction_match_mcpat,((inst_fp_32+inst_fp_64))/numberOfCores
+6,branch_instruction_match_mcpat,(inst_control)/numberOfCores
 7,load_instruction_match_mcpat,(inst_executed_global_atomics+inst_executed_global_loads+inst_executed_global_reductions+inst_executed_local_loads+inst_executed_shared_atomics+inst_executed_shared_loads+inst_executed_tex_ops+inst_executed_surface_reductions+inst_executed_surface_loads)/numberOfCores
 8,store_instruction_match_mcpat,(inst_executed_global_stores+inst_executed_local_stores+inst_executed_shared_stores+inst_executed_surface_stores)/numberOfCores
 9,int_register_read_access_match_mcpat,local_load_requests/numberOfCores
