@@ -12,8 +12,8 @@
 10,int_register_write_access_match_mcpat,local_store_requests/numberOfCores
 11,float_register_read_access_match_mcpat,0
 12,float_register_write_access_match_mcpat,0
-13,ialu_accesses_match_mcpat,(inst_integer/32)/numberOfCores
-14,fpu_accesses_match_mcpat,((inst_fp_16+inst_fp_32+inst_fp_64)/32)/numberOfCores
+13,ialu_accesses_match_mcpat,(inst_integer)/numberOfCores
+14,fpu_accesses_match_mcpat,((inst_fp_16+inst_fp_32+inst_fp_64))/numberOfCores
 15,mul_accesses_match_mcpat,0
 16,ccache_read_accesses_match_mcpat,0
 17,ccache_read_misses_match_mcpat,0
