@@ -463,7 +463,7 @@
 			<param name="mc_clock" value="1848"/><!--DIMM IO bus clock rate MHz DDR2-400 for Niagara 1--> 
 			<param name="peak_transfer_rate" value="29568"/><!--MB/S  Syed: GTX 470 has 177.4GB/s mem transfer rate with 6 MCs -->
 			<param name="block_size" value="64"/><!--B-->
-			<param name="number_mcs" value="6"/><!-- 6 GDDR5 memory controllers  -->
+			<param name="number_mcs" value="10000"/><!-- 6 GDDR5 memory controllers  -->
 			<!-- current McPAT only supports homogeneous memory controllers -->
 			<param name="memory_channels_per_mc" value="2"/>
 			<param name="number_ranks" value="1"/>
