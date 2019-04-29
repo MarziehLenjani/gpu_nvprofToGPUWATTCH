@@ -61,7 +61,7 @@ def main():
                             if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' in dataFrame.iloc[i].loc['Name']) ):
                                 metricValue +=float(dataFrame.iloc[i].loc['Avg'])
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
-                        metricValue +=dataFrame.iloc[i].loc['Avg']
+                        metricValue +=(dataFrame.iloc[i].loc['Avg'])*
 
                 if (percentage==True):
                     metricValue=metricValue/len(dataFrame)

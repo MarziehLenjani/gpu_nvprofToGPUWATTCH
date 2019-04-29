@@ -77,9 +77,9 @@ def main():
     runResultFileName=os.path.join(homeStr,opts.runResultFileName)
     expressionFileName=opts.expressionFileName
     os.makedirs(gpuwattch_xml_outputFilesPath, exist_ok=True)
-    energy_outputFilesPath=os.path.join(homeStr,opts.energy_outputFiles)
-    os.makedirs(energy_outputFilesPath,exist_ok=True)
-
+    energy_outputFilePath=os.path.join(homeStr,opts.energy_outputFiles)
+    os.makedirs(energy_outputFilePath,exist_ok=True)
+    energyFile=os.path.join(opts.energy_outputFiles,"energy.csv")
     #global parameterNames
     getRunTimeFromRunResultFile=False
     global parameColumnName
@@ -106,7 +106,7 @@ def main():
     print(dataFramContaingExpressions)
     generateGPUwattch_outputFiles(dataFramContaingExpressions, templateMcpat, getRunTimeFromRunResultFile,runResultFileName, statDirectoryPath, gpuwattch_xml_outputFilesPath)
     #os.system('sshpass -p'+ opts.password+' scp -r ~/summaryResults/gpuwattch_xml_outputFiles  ml2au@power1.cs.virginia.edu:summaryResults/')
-    getEnergy(energy_outputFilesPath,gpuwattch_xml_outputFilesPath,statDirectoryPath,dataFramContaingExpressions)
+    getEnergy(energyFile,gpuwattch_xml_outputFilesPath,statDirectoryPath,dataFramContaingExpressions)
 
 
 
@@ -417,7 +417,7 @@ class parser:
 
 
 # runs McPAT and gives you the total energy in mJs
-def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath,dataFramContaingExpressions):
+def getEnergy(energyFile, gpuwattch_xml_outputFiles, statDirectoryPath,dataFramContaingExpressions):
     EnergyDf = pd.DataFrame()
     for operationFileName in os.listdir(statDirectoryPath):
         if operationFileName[0] != '.':
@@ -428,6 +428,7 @@ def getEnergy(energyFiles, gpuwattch_xml_outputFiles, statDirectoryPath,dataFram
             xmlFile=os.path.join(gpuwattch_xml_outputFiles, operationName+".xml")
             EnergyDf = runAndGetEnergy(xmlFile, dataFrameContainingStats,dataFramContaingExpressions,operationName)
     print (EnergyDf)
+    EnergyDf.to_csv(energyFile)
 def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions,operationName):
     operationNameStr='operation'
     runtimeStr = 'runtime'
