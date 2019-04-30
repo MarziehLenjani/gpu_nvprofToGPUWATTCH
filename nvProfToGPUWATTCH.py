@@ -439,6 +439,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     MCenergyStr = 'MCenergy'
     DRAM_EnergyStr= 'DRAM_Energy'
     LSEnergyStr='LSEnergy'
+    measuredStr='MeasuredEnergy'
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     scalFactor = (14.0 / 22.0)
@@ -446,6 +447,7 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
     Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
+    measuredEnergy=getStat(dataFrameContainingStats,"powerConsumption")
     Penergy = (Pleakage + Pdynamic)*runtime*scalFactor
     Cenergy = (Cleakage + Cdynamic)*runtime*scalFactor
     L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
@@ -456,7 +458,8 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
               DRAM_EnergyStr: DRAM_Energy,
-              LSEnergyStr:LSEnergy}
+              LSEnergyStr:LSEnergy,
+              measuredStr:measuredEnergy}
     tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
     return tmpEnergyDf
