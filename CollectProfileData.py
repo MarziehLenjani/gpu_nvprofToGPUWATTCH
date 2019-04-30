@@ -43,9 +43,16 @@ def main():
                 pathToMetricFileNames = os.path.join(opts.inputDirectory, operationName, metricFileName)
                 if (metricName!='powerConsumption'):
                     dataFrame = pd.read_csv(pathToMetricFileNames, comment='=')
-
+                else:
+                    tmpLines = open(pathToMetricFileNames, 'rt')
+                    for line in tmpLines:
+                        if "System profiling result" in line.strip():
+                            break
+                    open("pathToMetricFileNames" + "_tmp", 'wt').writelines(tmpLines)
+                    dataFrame = pd.read_csv("pathToMetricFileNames" + "_tmp", comment='=')
 
                 metricValue=0
+                print(metricName)
                 for i in range(len(dataFrame)):
                     print(type(dataFrame.iloc[i].loc['Avg']))
                     percentage=False
@@ -63,12 +70,7 @@ def main():
                             if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' in dataFrame.iloc[i].loc['Name']) ):
                                 metricValue +=float(dataFrame.iloc[i].loc['Avg'])
                     elif (metricName=='powerConsumption'):
-                        tmpLines = open(pathToMetricFileNames, 'rt')
-                        for line in tmpLines:
-                            if "System profiling result" in  line.strip():
-                                break
-                        open("pathToMetricFileNames"+"_tmp", 'wt').writelines(tmpLines)
-                        dataFrame = pd.read_csv("pathToMetricFileNames"+"_tmp", comment='=')
+
                         tmpMax=0
                         for j in range(len(dataFrame)):
                             if ((j%4 ==3 ) and dataFrame.iloc[i].loc['Max']>tmpMax):
