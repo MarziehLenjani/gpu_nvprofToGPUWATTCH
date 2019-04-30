@@ -17,6 +17,7 @@ def main():
     usage= "--help"
     metricNameStr='metricName'
     metricValueStr='metricValue'
+    nIter=30
 
     parser = OptionParser(usage=usage)
     homeStr=os.environ['HOME']
@@ -77,6 +78,9 @@ def main():
 
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
                         metricValue +=(dataFrame.iloc[i].loc['Avg'])
+                if (metricName == 'executionTime'):
+                    metricValue/nIter
+
 
                 if (percentage==True):
                     metricValue=metricValue/len(dataFrame)
