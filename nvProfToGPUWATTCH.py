@@ -441,18 +441,17 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     LSEnergyStr='LSEnergy'
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
-
-
+    scalFactor = (14.0 / 22.0)
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
     Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
-    Penergy = (Pleakage + Pdynamic)*runtime
-    Cenergy = (Cleakage + Cdynamic)*runtime
-    L2energy = (L3leakage + L3dynamic)*runtime
-    NoCenergy = (NoCleakage + NoCdynamic)*runtime
-    MCenergy = (MCleakage + MCdynamic)*runtime
-    LSEnergy= (LSleakage+ LSdynamic)*runtime
+    Penergy = (Pleakage + Pdynamic)*runtime*scalFactor
+    Cenergy = (Cleakage + Cdynamic)*runtime*scalFactor
+    L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
+    NoCenergy = (NoCleakage + NoCdynamic)*runtime*scalFactor
+    MCenergy = (MCleakage + MCdynamic)*runtime*scalFactor
+    LSEnergy= (LSleakage+ LSdynamic)*runtime*scalFactor
     DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,dataFrameContainingStats,"totalDRAM_Energy")
     temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
@@ -474,6 +473,7 @@ def runGPUWATTCH(procConfigFile):
     #print(output)
     p = parser(output)
     #print (p.get_tree())
+
     Pleakage = p.getValue(['Processor:', 'Total Leakage'])
     Pdynamic = p.getValue(['Processor:', 'Runtime Dynamic'])
     Pleakage = re.sub(' W', '', Pleakage)
