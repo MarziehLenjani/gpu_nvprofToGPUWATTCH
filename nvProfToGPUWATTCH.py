@@ -442,12 +442,12 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     measuredStr='MeasuredEnergy'
     tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
-    scalFactor = (14.0 / 22.0)
+    scalFactor = (14.0 / 22.0)**3
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
     Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
-    measuredEnergy=getStat(dataFrameContainingStats,"powerConsumption")
+    measuredEnergy=getStat(dataFrameContainingStats,"powerConsumption")*1.0e-3*runtime
     Penergy = (Pleakage + Pdynamic)*runtime*scalFactor
     Cenergy = (Cleakage + Cdynamic)*runtime*scalFactor
     L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
