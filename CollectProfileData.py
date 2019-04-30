@@ -73,7 +73,7 @@ def main():
 
                         tmpMax=0
                         for j in range(len(dataFrame)):
-                            if ((j%4 ==3 ) and dataFrame.iloc[i].loc['Max']>tmpMax):
+                            if ( dataFrame.iloc[i].loc['Max']>tmpMax):
                                 tmpMax=dataFrame.iloc[i].loc['Max']
 
                             metricValue=tmpMax
