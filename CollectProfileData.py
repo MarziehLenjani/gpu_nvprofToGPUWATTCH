@@ -31,7 +31,7 @@ def main():
                       action="store", dest="gpuwattch_xml_outputFiles", default= os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="output directory ")
     parser.add_option("-r", "--exe_run",
-                      action="store_false", dest="readExeTimeFromRunResult", default=False,
+                      action="store_true", dest="readExeTimeFromRunResult", default=False,
                       help="readExeTimeFromRunResult")
     (opts, args) = parser.parse_args()
 
