@@ -83,7 +83,7 @@ def main():
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
                         metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
                 if (metricName == 'executionTime'):
-                    metricValue/nIter
+                    metricValue=metricValue/nIter
 
 
                 if (percentage==True):
