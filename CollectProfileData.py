@@ -45,6 +45,7 @@ def main():
         print(operationName)
         summaryDataFrame = pd.DataFrame(columns=[metricNameStr, metricValueStr])
         for metricFileName in  os.listdir(subDirName):
+            print(metricFileName)
             if metricFileName[0]!='.' and metricFileName[-3:-1]!='tmp':
                 metricName=metricFileName[:-4]
                 pathToMetricFileNames = os.path.join(opts.inputDirectory, operationName, metricFileName)
