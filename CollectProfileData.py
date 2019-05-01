@@ -75,7 +75,7 @@ def main():
                         metricValue+=dataFrame.iloc[i].loc['Avg']
                     elif (metricName == 'executionTime'):
                         if(readExeTimeFromRunResult==True):
-                            infile = open(os.path.join(opts.inputDirectory, operationName,'executionTimeRunResult.csv', 'r'))
+                            infile = open(os.path.join(opts.inputDirectory, operationName,'executionTimeRunResult.csv'))
                             for line in infile:
                                 metricValue=line *1.0e-3
                         else:
