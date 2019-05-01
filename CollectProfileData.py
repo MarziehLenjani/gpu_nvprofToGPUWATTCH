@@ -17,7 +17,7 @@ def main():
     usage= "--help"
     metricNameStr='metricName'
     metricValueStr='metricValue'
-    nIter=100
+    global nIter
 
 
     parser = OptionParser(usage=usage)
@@ -33,8 +33,12 @@ def main():
     parser.add_option("-r", "--exe_run",
                       action="store_true", dest="readExeTimeFromRunResult", default=False,
                       help="readExeTimeFromRunResult")
+    parser.add_option("-i", "--nIter", type="integer",
+                      action="store", dest="nIter",
+                      default=100,
+                      help="number Of Iteration ")
     (opts, args) = parser.parse_args()
-
+    nIter=opts.nIter
     readExeTimeFromRunResult = opts.readExeTimeFromRunResult
 
     (opts, args) = parser.parse_args()
