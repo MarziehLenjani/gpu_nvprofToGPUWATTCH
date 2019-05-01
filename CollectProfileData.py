@@ -68,7 +68,7 @@ def main():
                         if(type(dataFrame.iloc[i].loc['Avg'])==str):
 
                             if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' in dataFrame.iloc[i].loc['Name']) ):
-                                metricValue +=float(dataFrame.iloc[i].loc['Avg'])
+                                metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']
                     elif (metricName=='powerConsumption'):
 
                         tmpMax=0
@@ -79,7 +79,7 @@ def main():
                         metricValue=tmpMax
 
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
-                        metricValue +=(dataFrame.iloc[i].loc['Avg'])
+                        metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
                 if (metricName == 'executionTime'):
                     metricValue/nIter
 
