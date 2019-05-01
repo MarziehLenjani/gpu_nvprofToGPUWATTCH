@@ -17,7 +17,7 @@ def main():
     usage= "--help"
     metricNameStr='metricName'
     metricValueStr='metricValue'
-    nIter=30
+    nIter=100
 
 
     parser = OptionParser(usage=usage)
@@ -96,7 +96,7 @@ def main():
 
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
                         metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
-                if (metricName == 'executionTime'):
+                if (metricName == 'executionTime' and readExeTimeFromRunResult==False):
                     metricValue=metricValue/nIter
 
 
