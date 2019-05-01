@@ -18,6 +18,7 @@ def main():
     metricNameStr='metricName'
     metricValueStr='metricValue'
     nIter=30
+    readExeTimeFromRunResult=True
 
     parser = OptionParser(usage=usage)
     homeStr=os.environ['HOME']
@@ -66,11 +67,17 @@ def main():
 
                         metricValue+=dataFrame.iloc[i].loc['Avg']
                     elif (metricName == 'executionTime'):
-                        if(type(dataFrame.iloc[i].loc['Avg'])==str):
+                        if(readExeTimeFromRunResult==True):
+                            infile = open(os.path.join(opts.inputDirectory, operationName,'executionTimeRunResult.csv', 'r'))
+                            for line in infile:
+                                metricValue=line *1.0e-3
+                        else:
 
-                            if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' not in dataFrame.iloc[i].loc['Name']) ):
-                                metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']
-                                print(dataFrame.iloc[i].loc['Avg']+"\n")
+                            if(type(dataFrame.iloc[i].loc['Avg'])==str):
+
+                                if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' not in dataFrame.iloc[i].loc['Name']) ):
+                                    metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']
+                                    print(dataFrame.iloc[i].loc['Avg']+"\n")
                     elif (metricName=='powerConsumption'):
 
                         tmpMax=0
