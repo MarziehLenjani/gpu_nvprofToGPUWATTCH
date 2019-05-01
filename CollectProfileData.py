@@ -18,7 +18,7 @@ def main():
     metricNameStr='metricName'
     metricValueStr='metricValue'
     nIter=30
-    readExeTimeFromRunResult=True
+
 
     parser = OptionParser(usage=usage)
     homeStr=os.environ['HOME']
@@ -30,6 +30,11 @@ def main():
     parser.add_option("-o", "--outputDir", type="string",
                       action="store", dest="gpuwattch_xml_outputFiles", default= os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="output directory ")
+    parser.add_option("-r", "--exe_run",
+                      action="store_false", dest="readExeTimeFromRunResult", default=False,
+                      help="readExeTimeFromRunResult")
+
+    readExeTimeFromRunResult = opts.readExeTimeFromRunResult
 
     (opts, args) = parser.parse_args()
     os.makedirs(opts.gpuwattch_xml_outputFiles, exist_ok=True)
