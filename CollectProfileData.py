@@ -41,6 +41,7 @@ def main():
             if metricFileName[0]!='.':
                 metricName=metricFileName[:-4]
                 pathToMetricFileNames = os.path.join(opts.inputDirectory, operationName, metricFileName)
+                print(pathToMetricFileNames+"\n")
                 if (metricName!='powerConsumption'):
                     dataFrame = pd.read_csv(pathToMetricFileNames, comment='=')
                 else:
@@ -69,6 +70,7 @@ def main():
 
                             if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' in dataFrame.iloc[i].loc['Name']) ):
                                 metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']
+                                print(dataFrame.iloc[i].loc['Avg']+"\n")
                     elif (metricName=='powerConsumption'):
 
                         tmpMax=0
