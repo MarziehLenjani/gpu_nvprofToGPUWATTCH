@@ -33,7 +33,7 @@ def main():
     parser.add_option("-r", "--exe_run",
                       action="store_true", dest="readExeTimeFromRunResult", default=False,
                       help="readExeTimeFromRunResult")
-    parser.add_option("-i", "--nIter", type="integer",
+    parser.add_option("-i", "--nIter", type="int",
                       action="store", dest="nIter",
                       default=100,
                       help="number Of Iteration ")
