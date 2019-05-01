@@ -33,6 +33,7 @@ def main():
     parser.add_option("-r", "--exe_run",
                       action="store_false", dest="readExeTimeFromRunResult", default=False,
                       help="readExeTimeFromRunResult")
+    (opts, args) = parser.parse_args()
 
     readExeTimeFromRunResult = opts.readExeTimeFromRunResult
 
