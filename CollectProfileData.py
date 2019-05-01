@@ -30,13 +30,13 @@ def main():
     parser.add_option("-o", "--outputDir", type="string",
                       action="store", dest="gpuwattch_xml_outputFiles", default= os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="output directory ")
-    parser.add_option("-r", "--exe_run",
+    parser.add_option("-e", "--exe_run",
                       action="store_true", dest="readExeTimeFromRunResult", default=False,
                       help="readExeTimeFromRunResult")
-    parser.add_option("-i", "--nIter", type="int",
+    parser.add_option("-r", "--nIter", type="int",
                       action="store", dest="nIter",
                       default=100,
-                      help="number Of Iteration ")
+                      help="number Of repeat ")
     (opts, args) = parser.parse_args()
     nIter=opts.nIter
     readExeTimeFromRunResult = opts.readExeTimeFromRunResult
