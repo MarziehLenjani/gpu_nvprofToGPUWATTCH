@@ -37,6 +37,7 @@
 34,dram_activation_energy_perByte,(0.65*1.0e-9)/256
 35,dram_accessEnergyPerByte,(2.0e-12)*8
 36,dramExternalPortEnergy_perByte,(3.0e-12)*8
-37,totalDRAM_Energy,(dram_activation_energy_perByte+dram_accessEnergyPerByte+dramExternalPortEnergy_perByte)*(dram_write_bytes+dram_read_bytes)
+37,totalDRAM_Energy,(dram_activation_energy_perByte+dram_accessEnergyPerByte+dramExternalPortEnergy_perByte)*(dram_write_bytes+dram_read_bytes)+DRAM_BAckGroundPower*executionTime
 38,numberOfCores,1
 39,numberOfMemoryController,1
+40,DRAM_BAckGroundPower,980*1.0e-3

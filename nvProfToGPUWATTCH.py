@@ -370,7 +370,7 @@ class parser:
         for line in buf:
 
             # this.dprint('l: ' + str(line.strip()))
-            print(line)
+            #print(line)
 
             indent = len(line) - len(line.lstrip())
             equal = '=' in line
@@ -426,10 +426,10 @@ def getEnergy(energyFile, gpuwattch_xml_outputFiles, statDirectoryPath,dataFramC
             pathTooperationStatFileNames = os.path.join(statDirectoryPath, operationFileName)
             dataFrameContainingStats = pd.read_csv(pathTooperationStatFileNames)
             xmlFile=os.path.join(gpuwattch_xml_outputFiles, operationName+".xml")
-            EnergyDf = runAndGetEnergy(xmlFile, dataFrameContainingStats,dataFramContaingExpressions,operationName)
+            EnergyDf = runAndGetEnergy(EnergyDf ,xmlFile, dataFrameContainingStats,dataFramContaingExpressions,operationName)
     print (EnergyDf)
     EnergyDf.to_csv(energyFile)
-def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions,operationName):
+def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingExpressions,operationName):
     operationNameStr='operation'
     runtimeStr = 'runtime'
     PenergyStr = 'Penergy'
@@ -438,14 +438,20 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     NoCenergyStr = 'NoCenergy'
     MCenergyStr = 'MCenergy'
     DRAM_EnergyStr= 'DRAM_Energy'
-    LSEnergyStr='LSEnergy'
+    ComputatationEnergyPercentageStr='Computation (%)'
     measuredStr='MeasuredEnergy'
-    tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
+    MovementPercentageEnergyStr='Movement (%)'
+    controlEnergyPercentageStr='Control (%)'
+    accessPercenatgStr='Access (%)'
+    totaEnergyStr='Total'
+    #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     scalFactor = (14.0 / 22.0)**3
     #leakage, dynamic = runMcPAT(procConfigFile)
     #Pleakage, Pdynamic, Cleakage, Cdynamic, L3leakage, L3dynamic, NoCleakage, NoCdynamic, MCleakage, MCdynamic=0,0,0,0,0,0,0,0,0,0
-    Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic,MCleakage,MCdynamic,LSleakage ,LSdynamic =runGPUWATTCH(xmlFile)
+    Pleakage,Pdynamic,Cleakage,Cdynamic,L3leakage,L3dynamic,NoCleakage,NoCdynamic\
+        ,MCleakage,MCdynamic,ComputationLeakage ,ComputationDynamic, \
+    controlLeakage, controlDynamic, acccessLeakage, accessDynamic =runGPUWATTCH(xmlFile)
     runtime = getStat(dataFrameContainingStats,"executionTime")
     measuredEnergy=getStat(dataFrameContainingStats,"powerConsumption")*1.0e-3*runtime
     Penergy = (Pleakage + Pdynamic)*runtime*scalFactor
@@ -453,16 +459,28 @@ def runAndGetEnergy(xmlFile,dataFrameContainingStats,dataFramContaingExpressions
     L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
     NoCenergy = (NoCleakage + NoCdynamic)*runtime*scalFactor
     MCenergy = (MCleakage + MCdynamic)*runtime*scalFactor
-    LSEnergy= (LSleakage+ LSdynamic)*runtime*scalFactor
-    DRAM_Energy=getValueFromExpression(dataFramContaingExpressions,dataFrameContainingStats,"totalDRAM_Energy")
-    temmpDic={operationNameStr:operationName,runtimeStr:runtime, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
+    DRAM_Energy = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
+    totaEnery = Penergy + DRAM_Energy
+    accesssEnergy=(acccessLeakage+accessDynamic)*runtime*scalFactor
+    accessEnergyPercantage=accesssEnergy/totaEnery*100
+    ComputationEnergy= (ComputationLeakage+ ComputationDynamic)*runtime*scalFactor
+
+
+    computationPercentageEnergy=ComputationEnergy/totaEnery*100
+    controlEnergy=(controlLeakage+controlDynamic)*runtime*scalFactor
+    controlEnergyPercentage=controlEnergy/totaEnery*100
+    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessEnergyPercantage
+    temmpDic={operationNameStr:operationName,runtimeStr:runtime,measuredStr:measuredEnergy, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
               DRAM_EnergyStr: DRAM_Energy,
-              LSEnergyStr:LSEnergy,
-              measuredStr:measuredEnergy}
-    tmpEnergyDf=tmpEnergyDf.append(temmpDic,ignore_index=True)
+              ComputatationEnergyPercentageStr:computationPercentageEnergy,
+              MovementPercentageEnergyStr:MovementPercentageEnergy,
+              controlEnergyPercentageStr:controlEnergyPercentage,
+              accessPercenatgStr:accessEnergyPercantage
+              }
+    EnergyDf=EnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
-    return tmpEnergyDf
+    return EnergyDf
 
 
 def runGPUWATTCH(procConfigFile):
@@ -501,14 +519,29 @@ def runGPUWATTCH(procConfigFile):
     MCdynamic = p.getValue(['Processor:', "Total MCs", 'Runtime Dynamic'])
     MCleakage = re.sub(' W', '', MCleakage)
     MCdynamic = re.sub(' W', '', MCdynamic)
+    AccessLeakage=float( re.sub(' W', '',p.getValue(['Core:', 'Load Store Unit:', 'Subthreshold Leakage' ])))
+    AccessDynamic=float( re.sub(' W', '',p.getValue(['Core:', 'Load Store Unit:', 'Runtime Dynamic' ])))
+
+    ControlLeakage =float( re.sub(' W', '',p.getValue(['Core:', 'Instruction Fetch Unit:', 'Subthreshold Leakage' ])))+\
+    +float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:',  'Instruction Scheduler:', 'Subthreshold Leakage'])))
+    ControlDynamic = float(re.sub(' W', '',p.getValue(['Core:', 'Instruction Fetch Unit:', 'Runtime Dynamic'])))+\
+                         +float(re.sub(' W', '',p.getValue(['Core:', 'Instruction Fetch Unit:', 'Runtime Dynamic'])))
+
     # ---------------------------------------
-    LSleakage = p.getValue(['Core:', 'Load Store Unit:', 'Subthreshold Leakage'])
-    LSdynamic = p.getValue(['Core:', 'Load Store Unit:', 'Runtime Dynamic'])
-    LSleakage = re.sub(' W', '', LSleakage)
-    LSdynamic = re.sub(' W', '', LSdynamic)
+    ComputationLeakage =float( re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Integer ALUs (Count: 32 ):', 'Subthreshold Leakage' ])))+\
+                        float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Floating Point Units (FPUs) (Count: 32 ):', 'Subthreshold Leakage' ])))
+    +float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Complex ALUs (Mul/Div) (Count: 4 ):', 'Subthreshold Leakage'])))
+    ComputationDynamic = float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Integer ALUs (Count: 32 ):', 'Runtime Dynamic'])))+\
+                         float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Floating Point Units (FPUs) (Count: 32 ):', 'Runtime Dynamic'])))\
+                         +float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Complex ALUs (Mul/Div) (Count: 4 ):', 'Runtime Dynamic'])))
+
+
+    
+
     return (float(Pleakage), float(Pdynamic), float(Cleakage), float(Cdynamic), float(L3leakage), float(L3dynamic),
             float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic),
-            float(LSleakage), float(LSdynamic))
+            float(ComputationLeakage), float(ComputationDynamic), float(ControlLeakage),float(ControlDynamic),
+            float(AccessLeakage), float(AccessDynamic))
 
 
 if __name__ == '__main__':

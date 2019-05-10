@@ -1,0 +1,74 @@
+McPAT (version 0.8 of Aug, 2010) is computing the target processor...
+ 
+605***************:1=0
+606***************:1.23272e+10=0
+820****MARMAR********unicache.power_t.readOp.dynamic1.0118e-10
+821****MARMAR********unicache.caches->stats_t.readAc.access0.335
+822****MARMAR********XML->sys.L2[ithCache].read_accesses1.23272e+10
+****MARMAR is_tdp ********unicache.caches->local_result.power.readOp.dynamic7.31062e-11
+****MARMAR is_tdp ********unicache.caches->local_result.power.writeOp.dynamic1.08822e-10
+605***************:1=0
+606***************:1.23272e+10=0
+820****MARMAR********unicache.power_t.readOp.dynamic0.243724
+821****MARMAR********unicache.caches->stats_t.readAc.access1.23272e+10
+822****MARMAR********XML->sys.L2[ithCache].read_accesses1.23272e+10
+****MARMAR********unicache.power_t.readOp.dynamic0.243724
+****MARMAR********unicache.caches->local_result.power.readOp.dynamic7.31062e-11
+****MARMAR********unicache.caches->local_result.power.writeOp.dynamic1.08822e-10
+****MARMAR********rt_power.readOp.dynamic0.243724
+*********MARMAR1 Runtime Dynamic = 0.123095 W
+i is 0
+l2array[i]->rt_power.readOp.dynamic=0.2437240
+l2array[i]->rt_power.readOp.dynamic=0.2437240
+pppm_t=0.50506',1',1',1',
+
+McPAT (version 0.8 of Aug, 2010) results (current print level is 0, please increase print level to see the details in components): 
+*****************************************************************************************
+  Technology 22 nm
+  Using Long Channel Devices When Appropriate
+  Interconnect metal projection= aggressive interconnect technology projection
+  Core clock Rate(MHz) 1328
+
+*****************************************************************************************
+Processor: 
+  Area = 1641.77 mm^2
+  Peak Power = 350.896 W
+  Total Leakage = 166.625 W
+  Peak Dynamic = 184.272 W
+  Subthreshold Leakage = 164.59 W
+  Gate Leakage = 2.03482 W
+  Runtime Dynamic = 3810.36 W
+
+  Total Cores: 112 cores 
+  Device Type= ITRS high performance device type
+    Area = 1623.71 mm^2
+    Peak Dynamic = 178.915 W
+    Subthreshold Leakage = 164.113 W
+    Gate Leakage = 2.03329 W
+    Runtime Dynamic = 3445.65 W
+
+  Total L2s: 
+  Device Type= ITRS high performance device type
+    Area = 3.062 mm^2
+    Peak Dynamic = 0.134367 W
+    Subthreshold Leakage = 0.0486887 W
+    Gate Leakage = 0.000132619 W
+    Runtime Dynamic = 0.123095 W
+
+  Total NoCs (Network/Bus): 
+  Device Type= ITRS high performance device type
+    Area = 0.0320603 mm^2
+    Peak Dynamic = 0.0251078 W
+    Subthreshold Leakage = 0.0224939 W
+    Gate Leakage = 9.46468e-05 W
+    Runtime Dynamic = 0 W
+
+  Total MCs: 6 Memory Controllers 
+  Device Type= ITRS high performance device type
+    Area = 14.9658 mm^2
+    Peak Dynamic = 5.19791 W
+    Subthreshold Leakage = 0.405742 W
+    Gate Leakage = 0.00130096 W
+    Runtime Dynamic = 364.588 W
+
+*****************************************************************************************

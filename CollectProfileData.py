@@ -8,6 +8,7 @@ import math
 import os
 
 import pandas as pd
+import numpy as np
 
 
 
@@ -31,14 +32,11 @@ def main():
                       action="store", dest="gpuwattch_xml_outputFiles", default= os.path.join(homeStr, "summaryResults/summaryofMetrics"),
                       help="output directory ")
     parser.add_option("-e", "--exe_run",
-                      action="store_true", dest="readExeTimeFromRunResult", default=False,
+                      action="store_false", dest="readExeTimeFromRunResult", default=True,
                       help="readExeTimeFromRunResult")
-    parser.add_option("-r", "--nIter", type="int",
-                      action="store", dest="nIter",
-                      default=100,
-                      help="number Of repeat ")
+
     (opts, args) = parser.parse_args()
-    nIter=opts.nIter
+#    nIter=opts.nIter
     readExeTimeFromRunResult = opts.readExeTimeFromRunResult
 
     (opts, args) = parser.parse_args()
@@ -48,9 +46,21 @@ def main():
         outputFileName=os.path.join(opts.gpuwattch_xml_outputFiles,operationName+".csv")
         print(operationName)
         summaryDataFrame = pd.DataFrame(columns=[metricNameStr, metricValueStr])
+        scalForExce = 1
+        infile = open(os.path.join(opts.inputDirectory, operationName, 'executionTimeRunResult.tmp'))
+        for tc, line in enumerate(infile):
+            if (tc == 0):
+                print("nIter=" + line)
+                nIter = eval(line.strip())  # warmup
+                summaryDataFrame = summaryDataFrame.append(
+                    {metricNameStr: 'nIter', metricValueStr: nIter},
+                    ignore_index=True)
+            if (tc == 1):
+                print("runtime=" + line)
+                tmpExeTime = eval(line.strip()) * 1.0e-3
         for metricFileName in  os.listdir(subDirName):
             print(metricFileName)
-            if metricFileName[0]!='.' and metricFileName[-4:]!='.tmp':
+            if metricFileName[0]!='.' and metricFileName[-4:]!='.tmp' :
                 metricName=metricFileName[:-4]
                 pathToMetricFileNames = os.path.join(opts.inputDirectory, operationName, metricFileName)
                 print(pathToMetricFileNames+"\n")
@@ -66,9 +76,12 @@ def main():
 
                 metricValue=0
                 print(metricName)
+
+
                 for i in range(len(dataFrame)):
-                    print(type(dataFrame.iloc[i].loc['Avg']))
+
                     percentage=False
+
                     if((type(dataFrame.iloc[i].loc['Avg']) == str) and (dataFrame.iloc[i].loc['Avg'][-1]=='%')):
                         percentage=True
                         print ("***************"+dataFrame.iloc[i].loc['Avg'][-1])
@@ -78,16 +91,13 @@ def main():
 
                         metricValue+=dataFrame.iloc[i].loc['Avg']
                     elif (metricName == 'executionTime'):
-                        if(readExeTimeFromRunResult==True):
-                            infile = open(os.path.join(opts.inputDirectory, operationName,'executionTimeRunResult.csv'))
-                            for line in infile:
-                                metricValue=eval(line.strip()) *1.0e-3
-                        else:
 
-                            if(type(dataFrame.iloc[i].loc['Avg'])==str):
+                        if(readExeTimeFromRunResult!=True):
 
-                                if((dataFrame.iloc[i].loc['Avg'][-1]!='s') and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' not in dataFrame.iloc[i].loc['Name']) ):
-                                    metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']
+                            if(i==0 and type(dataFrame.iloc[i].loc['Avg'])==str and (dataFrame.iloc[i].loc['Avg']=='ms')):
+                                scalForExce=1.0e-3
+                            if((i>0) and ('GPU activities' in dataFrame.iloc[i].loc['Type']) and ('CUDA memcpy' not in dataFrame.iloc[i].loc['Name']) ):
+                                    metricValue +=float(dataFrame.iloc[i].loc['Avg'])* dataFrame.iloc[i].loc['Calls']*scalForExce
                                     print(dataFrame.iloc[i].loc['Avg']+"\n")
                     elif (metricName=='powerConsumption'):
 
@@ -100,8 +110,11 @@ def main():
 
                     elif(type(dataFrame.iloc[i].loc['Avg']) != str):
                         metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
-                if (metricName == 'executionTime' and readExeTimeFromRunResult==False):
-                    metricValue=metricValue/nIter
+                if (metricName == 'executionTime' ):
+                    if(readExeTimeFromRunResult==False):
+                        metricValue=metricValue/nIter
+                    else:
+                        metricValue=tmpExeTime
 
 
                 if (percentage==True):
