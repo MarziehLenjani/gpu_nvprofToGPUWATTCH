@@ -50,7 +50,7 @@ def main():
     parser.add_option("-x", "--xmlOuts", type="string",
                       action="store", dest="gpuwattch_xml_outputFiles", default=os.path.join(homeStr, "summaryResults/gpuwattch_xml_outputFiles"),
                       help="xml output files ")
-    parser.add_option("-o", "--energy_outs", type="string",
+    parser.add_option("-a", "--energy_outs", type="string",
                       action="store", dest="energy_outputFiles", default=os.path.join(homeStr, "summaryResults/energy_outputFiles"),
                       help="enery output file ")
     parser.add_option("-c", "--csvParam", type="string",
@@ -80,6 +80,7 @@ def main():
     energy_outputFilePath=os.path.join(homeStr,opts.energy_outputFiles)
     os.makedirs(energy_outputFilePath,exist_ok=True)
     energyFile=os.path.join(opts.energy_outputFiles,"energy.csv")
+    global dataFramContainingAllStats=pd.DataFrame()
     #global parameterNames
     getRunTimeFromRunResultFile=False
     global parameColumnName
@@ -444,7 +445,8 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     controlEnergyPercentageStr='Control (%)'
     accessPercenatgStr='Access (%)'
     totaEnergyStr='Total'
-    dramAcessStr='Acess to DRAM'
+    dramReadAcessStr='Read Acess to DRAM'
+    dramWriteAcessStr='Write Access to DRAM'
     compAccessStr='Acess to Computation units'
     #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
@@ -479,7 +481,9 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
               MovementPercentageEnergyStr:MovementPercentageEnergy,
               controlEnergyPercentageStr:controlEnergyPercentage,
               accessPercenatgStr:accessEnergyPercantage,
-              dramAcessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'dram_access_for_graph'),
+              dramReadAcessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'dram_readForGraph'),
+              dramWriteAcessStr: getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats,
+                                                       'dram_writeFoGraph'),
               compAccessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'computation_access_for_graph')
               }
     EnergyDf=EnergyDf.append(temmpDic,ignore_index=True)

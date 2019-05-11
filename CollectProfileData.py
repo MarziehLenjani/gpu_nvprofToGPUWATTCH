@@ -34,6 +34,9 @@ def main():
     parser.add_option("-e", "--exe_run",
                       action="store_false", dest="readExeTimeFromRunResult", default=True,
                       help="readExeTimeFromRunResult")
+    parser.add_option("-a", "--energy_outs", type="string",
+                      action="store", dest="energy_outputFiles", default=os.path.join(homeStr, "summaryResults/energy_outputFiles"),
+                      help="enery output file ")
 
     (opts, args) = parser.parse_args()
 #    nIter=opts.nIter
@@ -41,6 +44,9 @@ def main():
 
     (opts, args) = parser.parse_args()
     os.makedirs(opts.gpuwattch_xml_outputFiles, exist_ok=True)
+    energy_outputFilePath = os.path.join(homeStr, opts.energy_outputFiles)
+    allInOneFile = os.path.join(opts.energy_outputFiles, "allMetricsInOneFile.csv")
+    global dataFramContainingAllStats=pd.DataFrame()
     for operationName in sorted(os.listdir(opts.inputDirectory)):
         subDirName=os.path.join(opts.inputDirectory, operationName)
         outputFileName=os.path.join(opts.gpuwattch_xml_outputFiles,operationName+".csv")
@@ -124,9 +130,10 @@ def main():
         print(summaryDataFrame)
 
         summaryDataFrame.to_csv(outputFileName)
+        dataFramContainingAllStats = dataFramContainingAllStats.append(summaryDataFrame)
             #if not dataFrame.empty:
                 #print(dataFrame)
 
-
+    dataFramContainingAllStats.to_csv(allInOneFile)
 if __name__ == '__main__':
     main()
