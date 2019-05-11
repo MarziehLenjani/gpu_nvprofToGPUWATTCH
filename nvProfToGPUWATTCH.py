@@ -116,7 +116,7 @@ def generateGPUwattch_outputFiles(dataFramContaingExpressions,templateMcpat,getR
     if(getRunTimeFromRunResultFile):
         dataFrameContainingRunResult=pd.read_csv(runResultFileName)
         print(dataFrameContainingRunResult)
-    for operationFileName in  os.listdir(statDirectoryPath):
+    for operationFileName in  sorted(os.listdir(statDirectoryPath)):
         if operationFileName[0]!='.':
             operationName=operationFileName[:-4]
             print(operationName)
@@ -419,7 +419,7 @@ class parser:
 # runs McPAT and gives you the total energy in mJs
 def getEnergy(energyFile, gpuwattch_xml_outputFiles, statDirectoryPath,dataFramContaingExpressions):
     EnergyDf = pd.DataFrame()
-    for operationFileName in os.listdir(statDirectoryPath):
+    for operationFileName in sorted(os.listdir(statDirectoryPath)):
         if operationFileName[0] != '.':
             operationName = operationFileName[:-4]
             print(operationName)

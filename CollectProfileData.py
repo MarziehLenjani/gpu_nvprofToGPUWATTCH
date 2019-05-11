@@ -41,7 +41,7 @@ def main():
 
     (opts, args) = parser.parse_args()
     os.makedirs(opts.gpuwattch_xml_outputFiles, exist_ok=True)
-    for operationName in os.listdir(opts.inputDirectory):
+    for operationName in sorted(os.listdir(opts.inputDirectory)):
         subDirName=os.path.join(opts.inputDirectory, operationName)
         outputFileName=os.path.join(opts.gpuwattch_xml_outputFiles,operationName+".csv")
         print(operationName)
@@ -58,7 +58,7 @@ def main():
             if (tc == 1):
                 print("runtime=" + line)
                 tmpExeTime = eval(line.strip()) * 1.0e-3
-        for metricFileName in  os.listdir(subDirName):
+        for metricFileName in  sorted(os.listdir(subDirName)):
             print(metricFileName)
             if metricFileName[0]!='.' and metricFileName[-4:]!='.tmp' :
                 metricName=metricFileName[:-4]
