@@ -444,6 +444,8 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     controlEnergyPercentageStr='Control (%)'
     accessPercenatgStr='Access (%)'
     totaEnergyStr='Total'
+    dramAcessStr='Acess to DRAM'
+    compAccessStr='Acess to Computation units'
     #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     scalFactor = (14.0 / 22.0)**3
@@ -476,7 +478,9 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
               ComputatationEnergyPercentageStr:computationPercentageEnergy,
               MovementPercentageEnergyStr:MovementPercentageEnergy,
               controlEnergyPercentageStr:controlEnergyPercentage,
-              accessPercenatgStr:accessEnergyPercantage
+              accessPercenatgStr:accessEnergyPercantage,
+              dramAcessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'dram_access_for_graph'),
+              compAccessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'computation_access_for_graph')
               }
     EnergyDf=EnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
