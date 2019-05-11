@@ -80,7 +80,6 @@ def main():
     energy_outputFilePath=os.path.join(homeStr,opts.energy_outputFiles)
     os.makedirs(energy_outputFilePath,exist_ok=True)
     energyFile=os.path.join(opts.energy_outputFiles,"energy.csv")
-    global dataFramContainingAllStats=pd.DataFrame()
     #global parameterNames
     getRunTimeFromRunResultFile=False
     global parameColumnName

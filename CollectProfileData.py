@@ -46,7 +46,7 @@ def main():
     os.makedirs(opts.gpuwattch_xml_outputFiles, exist_ok=True)
     energy_outputFilePath = os.path.join(homeStr, opts.energy_outputFiles)
     allInOneFile = os.path.join(opts.energy_outputFiles, "allMetricsInOneFile.csv")
-    global dataFramContainingAllStats=pd.DataFrame()
+    dataFramContainingAllStats=pd.DataFrame()
     for operationName in sorted(os.listdir(opts.inputDirectory)):
         subDirName=os.path.join(opts.inputDirectory, operationName)
         outputFileName=os.path.join(opts.gpuwattch_xml_outputFiles,operationName+".csv")
