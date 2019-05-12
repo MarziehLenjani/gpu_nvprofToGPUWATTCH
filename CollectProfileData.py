@@ -19,7 +19,7 @@ def main():
     metricNameStr='metricName'
     metricValueStr='metricValue'
     global nIter
-
+    g_opStr = 'operation'
 
     parser = OptionParser(usage=usage)
     homeStr=os.environ['HOME']
@@ -125,7 +125,7 @@ def main():
 
                 if (percentage==True):
                     metricValue=metricValue/len(dataFrame)
-                summaryDataFrame=summaryDataFrame.append({metricNameStr:metricName, metricValueStr:metricValue},ignore_index=True)
+                summaryDataFrame=summaryDataFrame.append({metricNameStr:metricName, metricValueStr:metricValue,g_opStr:operationName},ignore_index=True)
 
         print(summaryDataFrame)
 
