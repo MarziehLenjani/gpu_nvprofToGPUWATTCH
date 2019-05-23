@@ -83,17 +83,15 @@ def main():
                 metricValue=0
                 print(metricName)
 
-
+                percentage = False
+                if ((type(dataFrame.iloc[0].loc['Avg']) == str) and (dataFrame.iloc[0].loc['Avg'][-1] == '%')):
+                    percentage = True
+                    dataFrame['Avg'] = dataFrame['Avg'].str.rstrip('%').astype('float')
                 for i in range(len(dataFrame)):
 
-                    percentage=False
 
-                    if((type(dataFrame.iloc[i].loc['Avg']) == str) and (dataFrame.iloc[i].loc['Avg'][-1]=='%')):
-                        percentage=True
-                        print ("***************"+dataFrame.iloc[i].loc['Avg'][-1])
-                        tmpStr=dataFrame.iloc[i].loc['Avg'][:-1]
-                        #print()
-                        dataFrame['Avg']=dataFrame['Avg'].str.rstrip('%').astype('float') / 100.0 #TODO weighted value for  percentage  values for multiple kernels
+
+                    if(percentage==True):
 
                         metricValue+=dataFrame.iloc[i].loc['Avg']
                     elif (metricName == 'executionTime'):
@@ -114,7 +112,7 @@ def main():
 
                         metricValue=tmpMax
 
-                    elif(type(dataFrame.iloc[i].loc['Avg']) != str):
+                    elif(type(dataFrame.iloc[i].loc['Avg']) != str ):
                         metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
                 if (metricName == 'executionTime' ):
                     if(readExeTimeFromRunResult==False):
