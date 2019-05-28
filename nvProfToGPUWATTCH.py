@@ -1,4 +1,4 @@
-#!/usr/bin/python
+/dramReadAcessStr#!/usr/bin/python
 from optparse import OptionParser
 from inspect import currentframe, getframeinfo
 
@@ -543,7 +543,7 @@ def runGPUWATTCH(procConfigFile):
                          +float(re.sub(' W', '',p.getValue(['Core:', 'Execution Unit:', 'Complex ALUs (Mul/Div) (Count: 4 ):', 'Runtime Dynamic'])))
 
 
-    
+
 
     return (float(Pleakage), float(Pdynamic), float(Cleakage), float(Cdynamic), float(L3leakage), float(L3dynamic),
             float(NoCleakage), float(NoCdynamic), float(MCleakage), float(MCdynamic),
