@@ -35,7 +35,7 @@
 32,NoC_Flit_size_in_Byte,4
 33,NOC_accesses_match_mcpat,(dram_read_bytes+dram_write_bytes)/NoC_Flit_size_in_Byte
 34,dram_activation_energy_perByte,(0.073+9.4*1.e-5+0.0001+0.0002+0.2358+0.005)*1.e-9/256
-35,dram_accessEnergyPerByte,(0.05+4.72e-6+4.60e-5+0.006+0.14+0.007+0.1+7.1+0.2)*1.e-9/4
+35,dram_accessEnergyPerByte,(0.05+4.72e-6+4.60e-5+0.006+0.14+0.007+0.005+7.1e-05+0.2)*1.e-9/4
 36,dramExternalPortEnergy_perByte,(3.0e-12)*8
 37,totalDRAM_Energy,(dram_activation_energy_perByte+dram_accessEnergyPerByte+dramExternalPortEnergy_perByte)*(dram_write_bytes+dram_read_bytes)+DRAM_BAckGroundPower*executionTime
 38,numberOfCores,1
