@@ -1,4 +1,4 @@
-/dramReadAcessStr#!/usr/bin/python
+#!/usr/bin/python
 from optparse import OptionParser
 from inspect import currentframe, getframeinfo
 
