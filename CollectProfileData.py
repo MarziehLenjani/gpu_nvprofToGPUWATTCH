@@ -112,7 +112,7 @@ def main():
 
                         metricValue=tmpMax
 
-                    elif(type(dataFrame.iloc[i].loc['Avg']) != str ):
+                    elif(type(dataFrame.iloc[i].loc['Avg']) != str and ('__uninitialized_fill') not in dataFrame.iloc[i].loc['Kernel'] and ('thrust::identity' not  in dataFrame.iloc[i].loc['Kernel'] )):
                         metricValue +=(dataFrame.iloc[i].loc['Avg']) * dataFrame.iloc[i].loc['Invocations']
                 if (metricName == 'executionTime' ):
                     if(readExeTimeFromRunResult==False):
