@@ -467,32 +467,35 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     NoCenergy = (NoCleakage + NoCdynamic)*runtime*scalFactor
     MCenergy = (MCleakage + MCdynamic)*runtime*scalFactor
 #    TotalDRAM_EnergyWithInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
-
+    numberOfStack=3
     DRAM_DynamicEnergyExceptInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDynamicDRAM_EnergyExceptInterface")
-    DRAM_Static_Energy = runtime*getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "DRAM_BAckGroundPowerConsumption")
+    DRAM_Static_Energy = numberOfStack*runtime*getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "DRAM_BAckGroundPowerConsumption")
 
-    accesssDynamicEnergy=(accessDynamic)*runtime*scalFactor
+
     DRAM_Energy=DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
 
     StaticAndBackground=(Pleakage*scalFactor)*runtime+DRAM_Static_Energy
     totaEnery = Penergy + DRAM_Energy
     power=totaEnery/runtime
-    accessDynamicEnergyPercantage = accesssDynamicEnergy / totaEnery * 100
-    ComputationDynamicEnergy = (ComputationDynamic) * runtime * scalFactor
+    controlDynamicEnergy = (controlDynamic + controlLeakage) * runtime * scalFactor
+    ComputationEnergy = (ComputationDynamic+ComputationLeakage) * runtime * scalFactor
+    accesssEnergy = (accessDynamic + acccessLeakage) * runtime * scalFactor
 
-    computationPercentageEnergy=ComputationDynamicEnergy/totaEnery*100
-    controlDynamicEnergy=(controlDynamic)*runtime*scalFactor
+    accessEnergyPercantage = accesssEnergy / totaEnery * 100
+    computationPercentageEnergy=ComputationEnergy/totaEnery*100
     controlEnergyPercentage=controlDynamicEnergy/totaEnery*100
+
+    
     StaticAndBackGroundEnergyPercentage=StaticAndBackground/totaEnery*100
     DRAM_BackGroundPercentageEnergy=DRAM_Static_Energy/totaEnery*100
-    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessDynamicEnergyPercantage-StaticAndBackGroundEnergyPercentage
+    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessEnergyPercantage
     temmpDic={operationNameStr:operationName,runtimeStr:runtime,measuredStr:measuredEnergy, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
               DRAM_EnergyStr: DRAM_Energy,
               ComputatationEnergyPercentageStr:computationPercentageEnergy,
               MovementPercentageEnergyStr:MovementPercentageEnergy,
               controlEnergyPercentageStr:controlEnergyPercentage,
-              accessPercenatgStr:accessDynamicEnergyPercantage,
+              accessPercenatgStr:accessEnergyPercantage,
               dramReadAcessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'dram_readForGraph'),
               dramWriteAcessStr: getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats,
                                                        'dram_writeFoGraph'),
