@@ -449,6 +449,7 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     compAccessStr='Acess to Computation units'
     totalEnergyStr='total energy'
     powerStr='power'
+    staticPercentageEnergyStr='Static (%)'
     #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     scalFactor = (14.0 / 22.0)**3
@@ -464,31 +465,39 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
     NoCenergy = (NoCleakage + NoCdynamic)*runtime*scalFactor
     MCenergy = (MCleakage + MCdynamic)*runtime*scalFactor
-    DRAM_Energy = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
-    totaEnery = Penergy + DRAM_Energy
-    accesssEnergy=(acccessLeakage+accessDynamic)*runtime*scalFactor
-    accessEnergyPercantage=accesssEnergy/totaEnery*100
-    ComputationEnergy= (ComputationLeakage+ ComputationDynamic)*runtime*scalFactor
+    TotalDRAM_EnergyWithInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
+
+    DRAM_DynamicEnergyExceptInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDynamicDRAM_EnergyExceptInterface")
+    DRAM_Static_Energy = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalStaticDRAM_Energy")
+
+    accesssDynamicEnergy=(accessDynamic)*runtime*scalFactor
+    DRAM_Energy=DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
+
+    StaticAndBackground=(Pleakage+DRAM_Static_Energy)*runtime*scalFactor
+    totaEnery = Penergy + DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
     power=totaEnery/runtime
+    accessDynamicEnergyPercantage = accesssDynamicEnergy / totaEnery * 100
+    ComputationDynamicEnergy = (ComputationDynamic) * runtime * scalFactor
 
-
-    computationPercentageEnergy=ComputationEnergy/totaEnery*100
-    controlEnergy=(controlLeakage+controlDynamic)*runtime*scalFactor
-    controlEnergyPercentage=controlEnergy/totaEnery*100
-    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessEnergyPercantage
+    computationPercentageEnergy=ComputationDynamicEnergy/totaEnery*100
+    controlDynamicEnergy=(controlDynamic)*runtime*scalFactor
+    controlEnergyPercentage=controlDynamicEnergy/totaEnery*100
+    StaticEnergyPercentage=StaticAndBackground/totaEnery*100
+    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessDynamicEnergyPercantage-StaticEnergyPercentage
     temmpDic={operationNameStr:operationName,runtimeStr:runtime,measuredStr:measuredEnergy, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
               DRAM_EnergyStr: DRAM_Energy,
               ComputatationEnergyPercentageStr:computationPercentageEnergy,
               MovementPercentageEnergyStr:MovementPercentageEnergy,
               controlEnergyPercentageStr:controlEnergyPercentage,
-              accessPercenatgStr:accessEnergyPercantage,
+              accessPercenatgStr:accessDynamicEnergyPercantage,
               dramReadAcessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'dram_readForGraph'),
               dramWriteAcessStr: getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats,
                                                        'dram_writeFoGraph'),
               compAccessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'computation_access_for_graph'),
 		totalEnergyStr:totaEnery,
-		powerStr:power
+		powerStr:power,
+        staticPercentageEnergyStr:StaticEnergyPercentage,
               }
     EnergyDf=EnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)

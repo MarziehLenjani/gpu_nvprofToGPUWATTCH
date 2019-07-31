@@ -48,3 +48,6 @@
 45,dram_activation_energy_perByteFromMondrian,(0.65*1.0e-9)/256
 46,dram_accessEnergyPerByteFromMondrian,(2.0e-12)*8
 47,dramExternalPortEnergy_perByteFromMondrian,(3.0e-12)*8
+48,totalDynamicDRAM_EnergyExceptInterface,(dram_activation_energy_perByte+dram_accessEnergyPerByte)*(dram_write_bytes+dram_read_bytes)
+49,totalStaticDRAM_Energy,DRAM_BAckGroundPower*executionTime
+
