@@ -473,7 +473,7 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     accesssDynamicEnergy=(accessDynamic)*runtime*scalFactor
     DRAM_Energy=DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
 
-    StaticAndBackground=(Pleakage+DRAM_Static_Energy)*runtime*scalFactor
+    StaticAndBackground=(Pleakage*scalFactor+DRAM_Static_Energy)*runtime
     totaEnery = Penergy + DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
     power=totaEnery/runtime
     accessDynamicEnergyPercantage = accesssDynamicEnergy / totaEnery * 100
