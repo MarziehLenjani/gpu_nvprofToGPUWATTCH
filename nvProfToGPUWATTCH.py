@@ -449,7 +449,8 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     compAccessStr='Acess to Computation units'
     totalEnergyStr='total energy'
     powerStr='power'
-    staticPercentageEnergyStr='Static (%)'
+    staticAndBackGroundPercentageEnergyStr='Static and BackGround(%)'
+    DRAM_BackGroundPercentageEnergyStr='DRAM background (%)'
     #tmpEnergyDf = pd.DataFrame(columns=[runtimeStr,PenergyStr,CenergyStr,L2energyStr,NoCenergyStr,MCenergyStr])
 
     scalFactor = (14.0 / 22.0)**3
@@ -468,13 +469,13 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     TotalDRAM_EnergyWithInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
 
     DRAM_DynamicEnergyExceptInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDynamicDRAM_EnergyExceptInterface")
-    DRAM_Static_Energy = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalStaticDRAM_Energy")
+    DRAM_Static_Energy = runtime*getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "DRAM_BAckGroundPower")
 
     accesssDynamicEnergy=(accessDynamic)*runtime*scalFactor
     DRAM_Energy=DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
 
     StaticAndBackground=(Pleakage*scalFactor)*runtime+DRAM_Static_Energy
-    totaEnery = Penergy + DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
+    totaEnery = Penergy + DRAM_Energy
     power=totaEnery/runtime
     accessDynamicEnergyPercantage = accesssDynamicEnergy / totaEnery * 100
     ComputationDynamicEnergy = (ComputationDynamic) * runtime * scalFactor
@@ -482,8 +483,9 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     computationPercentageEnergy=ComputationDynamicEnergy/totaEnery*100
     controlDynamicEnergy=(controlDynamic)*runtime*scalFactor
     controlEnergyPercentage=controlDynamicEnergy/totaEnery*100
-    StaticEnergyPercentage=StaticAndBackground/totaEnery*100
-    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessDynamicEnergyPercantage-StaticEnergyPercentage
+    StaticAndBackGroundEnergyPercentage=StaticAndBackground/totaEnery*100
+    DRAM_BackGroundPercentageEnergy=DRAM_Static_Energy/totaEnery*100
+    MovementPercentageEnergy = 100-controlEnergyPercentage-computationPercentageEnergy-accessDynamicEnergyPercantage-StaticAndBackGroundEnergyPercentage
     temmpDic={operationNameStr:operationName,runtimeStr:runtime,measuredStr:measuredEnergy, PenergyStr:Penergy, CenergyStr:Cenergy, L2energyStr:L2energy,
               NoCenergyStr:NoCenergy, MCenergyStr:MCenergy,
               DRAM_EnergyStr: DRAM_Energy,
@@ -497,7 +499,8 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
               compAccessStr:getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, 'computation_access_for_graph'),
 		totalEnergyStr:totaEnery,
 		powerStr:power,
-        staticPercentageEnergyStr:StaticEnergyPercentage,
+        staticAndBackGroundPercentageEnergyStr:StaticAndBackGroundEnergyPercentage,
+        DRAM_BackGroundPercentageEnergyStr:DRAM_BackGroundPercentageEnergy
               }
     EnergyDf=EnergyDf.append(temmpDic,ignore_index=True)
     #print "leakage: %f, dynamic: %f and runtime: %f" % (leakage, dynamic, runtime)
