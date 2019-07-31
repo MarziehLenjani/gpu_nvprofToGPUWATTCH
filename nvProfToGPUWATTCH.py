@@ -466,10 +466,10 @@ def runAndGetEnergy(EnergyDf, xmlFile,dataFrameContainingStats,dataFramContaingE
     L2energy = (L3leakage + L3dynamic)*runtime*scalFactor
     NoCenergy = (NoCleakage + NoCdynamic)*runtime*scalFactor
     MCenergy = (MCleakage + MCdynamic)*runtime*scalFactor
-    TotalDRAM_EnergyWithInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
+#    TotalDRAM_EnergyWithInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDRAM_Energy")
 
     DRAM_DynamicEnergyExceptInterface = getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "totalDynamicDRAM_EnergyExceptInterface")
-    DRAM_Static_Energy = runtime*getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "DRAM_BAckGroundPower")
+    DRAM_Static_Energy = runtime*getValueFromExpression(dataFramContaingExpressions, dataFrameContainingStats, "DRAM_BAckGroundPowerConsumption")
 
     accesssDynamicEnergy=(accessDynamic)*runtime*scalFactor
     DRAM_Energy=DRAM_DynamicEnergyExceptInterface+DRAM_Static_Energy
